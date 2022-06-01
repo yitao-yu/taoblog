@@ -1,5 +1,5 @@
 ---
-layout: postmarkdownp
+layout: "post"
 title:  "Jekyll真是太香了!！"
 date:   2022-05-31 22:05:55 -0400
 categories: jekyll update
