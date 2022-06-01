@@ -9,7 +9,7 @@ categories: jekyll update
 
 一开始想得还是非常美好的：那我就在本地搭一个wordpress（但wordrpess是动态网页，是有数据库的）然后想办法把他静态化就好了，毕竟所有的文件都在本地，wordpress（不管是wordpress.com还是wordpress）也确实提供导出服务。 但后来发现网页上的内容和素材其实是被存在数据库里面了，并且官方的导出的文件格式主要是供在不同服务器上使用wordpress去做迁移的时候用的（或者从wordpress.com迁移到自己的服务器），对静态化不是很友好。 
 
-Wordpress是有一些静态化插件的，但对于在docker容器里面运行的并不是很友好()，我最后是用了[winhtttrack][https://www.httrack.com/], 也就是每次在wordpress上写，然后用这个软件静态化，最后再git push，这样一个workflow。 但太麻烦了。
+Wordpress是有一些静态化插件的，但对于在docker容器里面运行的并不是很友好()，我最后是用了[winhtttrack][winhtttrack], 也就是每次在wordpress上写，然后用这个软件静态化，最后再git push，这样一个workflow。 但太麻烦了。
 
 然后大概又考虑了一下要不要跳出一下舒适区去看一下jekyll，结果jekyll实在是太香了，上手难度非常低。
 
@@ -28,9 +28,10 @@ Wordpress是有一些静态化插件的，但对于在docker容器里面运行�
 暂时先这样，未来可能小改一下模板或者试着看一下能不能用github action去在这里的rss里面去更新一些其他网站的帖子。
 
 
-
+[wordpress.com]: https://wordpress.com/
+[winhtttrack]: https://www.httrack.com/
 [jekyll-docs]: https://jekyllrb.com/docs/home
-[b站教程][https://www.bilibili.com/video/BV1qs41157ZZ?p=7]
-[antarctica][https://sdtelectronics.github.io/jekyll-theme-antarctica/]
-[jekyll-admin][https://jekyll.github.io/jekyll-admin/]
-[comment-tutorial][https://medium.com/@raravi/adding-comments-to-a-static-site-31506e77fc41]
+[b站教程]: https://www.bilibili.com/video/BV1qs41157ZZ?p=7
+[antarctica]: https://sdtelectronics.github.io/jekyll-theme-antarctica/
+[jekyll-admin]: https://jekyll.github.io/jekyll-admin/
+[comment-tutorial]: https://medium.com/@raravi/adding-comments-to-a-static-site-31506e77fc41
