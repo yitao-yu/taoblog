@@ -13,4 +13,13 @@ I'm here to blog about things technical, interesting or to present my side proje
 
 I hope you'll find those interesting. 
 
+***  
+I appreciate the helps from the community and I do have things that I want to pass on as a community members. 
+
+***  
+#Principles
+
+Not Implemented Error
+
 [yitao-yu]: yitao-yu.github.io
+[freearch]: 
