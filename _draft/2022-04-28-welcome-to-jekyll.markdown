@@ -9,7 +9,7 @@ categories: jekyll update
 
 一开始想得还是非常美好的：那我就在本地搭一个wordpress（但wordrpess是动态网页，是有数据库的）然后想办法把他静态化就好了，毕竟所有的文件都在本地，wordpress（不管是wordpress.com还是wordpress）也确实提供导出服务。 但后来发现网页上的内容和素材其实是被存在数据库里面了，并且官方的导出的文件格式主要是供在不同服务器上使用wordpress去做迁移的时候用的（或者从wordpress.com迁移到自己的服务器），对静态化不是很友好。 
 
-wordpress是有一些静态化插件的，但对于在docker容器里面运行的并不是很友好，我最后是用了[winhtttrack][https://www.httrack.com/]
+wordpress是有一些静态化插件的，但对于在docker容器里面运行的并不是很友好，我最后是用了[winhtttrack][https://www.httrack.com/], 也就是每次在wordpress上写，然后用这个软件静态化，最后再git push
 
 
 [jekyll-docs]: https://jekyllrb.com/docs/home
