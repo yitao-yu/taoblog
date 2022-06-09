@@ -1,0 +1,24 @@
+---
+layout: "post"
+title:  "我发现之前的papers with code的非官方rss源用不了了…"
+date:   2022-06-09 18:04:00 0800
+categories: jekyll update
+---
+
+我发现papers with code的rss源在国内被墙了（因为他使用了google severless服务去创建的源，所以是host在谷歌的服务器上，墙的只是rss，papers with code并没有被墙）。好在原作者是在github上公开了他用的代码，所以我们可以直接抄然后用github action去整个自己的rss源，刚好最近还有别的事需要我去用GitHub Action，可以先当练手。
+
+papers with code是没有官方rss源的，虽然提供了邮件订阅但那太不geeeeek了。
+
+这边撞了两个墙：第一个是原作者用的[hext](https://pypi.org/project/hext/)包只有mac和linux的distribution，这个没什么关系，我们用beautifulsoup把那部分代码改一下就好，这个按下不表，如果后面有需要的话；第二个是github action除了一些入门教程和文档之外有一些需要注意的地方。
+
+- 平时在开发的时候都另开虚拟环境，一方面不太容易乱，一方面也可以保证自己之后生成requirements.txt的时候会简洁一点。
+- github action会运行在工作环境中，你需要使用`actions/checkout@v2` 使你的仓库中的文件是可以被访问的（我不清楚还要不要继续chmod，为了保险我还是写了）
+- 修改的文件需要另写git指令push到仓库，具体可以看[这里](https://github.community/t/possible-to-commit-files-after-workflow-runs/17824)。
+- 生成github token，本地保存好备份，使用repo secrets去保存自己的token，并且严格限制token的权限（如果傻乎乎地明着写在了action.yml里面一定要把原来的token移除掉，使用新的token，否则commit历史里面是能看到你所有的修改的）
+- 欢迎来抄我的[action](https://github.com/yitao-yu/pwc-feeds/blob/master/.github/workflows/action.yml) : P。
+
+最后在本地的rss阅读器上效果是这样的，需要订阅可以访问 [https://yitao-yu.github.io/pwc-feeds/](https://yitao-yu.github.io/pwc-feeds/) 选取任意一个源。
+
+![微信图片_20220609174320.png](%E6%88%91%E5%8F%91%E7%8E%B0%E4%B9%8B%E5%89%8D%E7%9A%84papers%20with%20code%E7%9A%84%E9%9D%9E%E5%AE%98%E6%96%B9rss%E6%BA%90%E7%94%A8%E4%B8%8D%E4%BA%86%E4%BA%86%E2%80%A6%20604a95c74280406e8d51822f003bcd9c/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20220609174320.png)
+
+可以，很香！ *(゜-゜)つロ*
