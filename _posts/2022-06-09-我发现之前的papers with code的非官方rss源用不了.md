@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title:  "我发现之前的papers with code的非官方rss源用不了了…"
+title:  "我发现之前的papers with code的非官方rss源用不了…"
 date:   2022-06-09 18:04:00 0800
 categories: jekyll update
 ---
@@ -9,7 +9,7 @@ categories: jekyll update
 
 papers with code是没有官方rss源的，虽然提供了邮件订阅但那太不geeeeek了。
 
-这边撞了两个墙：第一个是原作者用的[hext](https://pypi.org/project/hext/)包只有mac和linux的distribution，这个没什么关系，我们用beautifulsoup把那部分代码改一下就好，这个按下不表，如果后面有需要的话；第二个是github action除了一些入门教程和文档之外有一些需要注意的地方。
+这边撞了两个墙：第一个是原作者用的[hext](https://pypi.org/project/hext/)包只有mac和linux的distribution，这个没什么关系，我们用beautifulsoup把那部分代码改一下就好，这个按下不表，如果后面有需要的话可以试着去复制他原来的爬虫规则；第二个是github action除了一些入门教程和文档之外有一些需要注意的地方。
 
 - 平时在开发的时候都另开虚拟环境，一方面不太容易乱，一方面也可以保证自己之后生成requirements.txt的时候会简洁一点。
 - github action会运行在工作环境中，你需要使用`actions/checkout@v2` 使你的仓库中的文件是可以被访问的（我不清楚还要不要继续chmod，为了保险我还是写了）
