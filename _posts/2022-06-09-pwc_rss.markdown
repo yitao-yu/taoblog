@@ -19,6 +19,6 @@ papers with code是没有官方rss源的，虽然提供了邮件订阅但那太�
 
 最后在本地的rss阅读器上效果是这样的，需要订阅可以访问 [https://yitao-yu.github.io/pwc-feeds/](https://yitao-yu.github.io/pwc-feeds/) 选取任意一个源。
 
-![rss_reader.png](./data/rss_pic.png)
+![rss_reader.png](https://github.com/yitao-yu/taoblog/blob/main/_posts/data/rss_pic.png)
 
 可以，很香！ *(゜-゜)つロ*
