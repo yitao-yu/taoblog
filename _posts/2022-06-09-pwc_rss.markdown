@@ -1,7 +1,7 @@
 ---
 layout: "post"
 title:  "我发现之前的papers with code的非官方rss源用不了…"
-date:   2022-06-09 18:04:00 0800
+date:   2022-06-09 18:04:00 +0800
 categories: jekyll update
 ---
 
