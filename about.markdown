@@ -19,7 +19,7 @@ I appreciate the helps from the community and I do have things that I want to pa
 
 - Use: free(free to distribute, free to tinker, free so that **use responsibly**) > closely related with the open source community > [free architechture][freearch](or reasonably charged) > accessible
 
-- For: Reapeatable(in terms of the workflow implemented); Assessable(in terms of presenting performance along the time, if needed) ; Stable *if can*(in terms of the performance itself can be relatively robust on datasets for similar purpose or robust throughout time)
+- For: Reapeatable(in terms of the workflow implemented); Assessable(in terms of automatically assessing the performance, if needed throughout time) ; Stable *if can*(in terms of the performance itself can be relatively robust on datasets for similar purpose or robust throughout time)
 
 [yitao-yu]: https://yitao-yu.github.io
 [freearch]: https://www.zhihu.com/people/jefftian/posts?
