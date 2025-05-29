@@ -1,9 +1,11 @@
 ---
 layout: "post"
-title:  "使用TailScale进行内网穿透，PC as ssh server"
+title:  "使用TailScale进行内网穿透，PC as server"
 date:   2025-05-29 12:08:00 -0500
 categories: jekyll update
 ---
+
+本片的内容受到[五道口纳什：GPU服务器](https://www.bilibili.com/video/BV1PYfpYdEPx/?spm_id_from=333.1387.search.video_card.click)启发，并且手边因为课程需要刚好有Raspberry Pi，适合将PC改造成个人用的GPU服务器，或者个人用NAS。实操中发现，Tailscale已经提供了比较好的内网穿透解决方案，并且不需要额外购置域名。
 
 #### Tailscale + SSH server
 
