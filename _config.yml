@@ -28,7 +28,11 @@ twitter_username:
 github_username:  yitao-yu
 
 header_pages:
+<<<<<<< HEAD
   - about.markdown pai-00notes.markdown
+=======
+  - about.md
+>>>>>>> parent of 8371b49 (update config)
 
 # Build settings
 theme: minima

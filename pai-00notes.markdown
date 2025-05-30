@@ -5,13 +5,6 @@ permalink: /pai/
 group: pai
 ---
 
-<ul>
-  {% assign pai_pages = site.pages | where: "group", "pai" %}
-  {% for page in pai_pages %}
-    <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-  {% endfor %}
-</ul>
-
 ## Motivation and Thoughts
 
 Hi! I'm Yitao. This is a list of my notes while reading the book *"Probabilistic Aritificial Intelligence"* by Andreas Krause and Jonas Hübotter, which I'll refer to as PAI. It is [available on arxiv](https://arxiv.org/abs/2502.05244). I believe that it is also a [course website](https://las.inf.ethz.ch/teaching/pai-f24), where the book is used as a textbook. 
