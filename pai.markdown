@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Study Notes(Probabilistic AI)
+title: "Study Notes: Probabilistic AI"
 permalink: /pai/
 group: pai
 ---
