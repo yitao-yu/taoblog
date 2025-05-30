@@ -27,6 +27,9 @@ url: "yitao-yu.github.io" # the base hostname & protocol for your site, e.g. htt
 twitter_username: 
 github_username:  yitao-yu
 
+header_pages:
+  - about.md
+
 # Build settings
 theme: minima
 plugins:
