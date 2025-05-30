@@ -2,7 +2,15 @@
 layout: page
 title: Study Notes(Probabilistic AI)
 permalink: /pai/
+group: pai
 ---
+
+<ul>
+  {% assign pai_pages = site.pages | where: "group", "pai" %}
+  {% for page in pai_pages %}
+    <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+  {% endfor %}
+</ul>
 
 ## Motivation and Thoughts
 
@@ -20,7 +28,7 @@ My notetaking is mostly a cheatsheet for future me and I'll go through some of t
 
 Plan: We would skip Bayesian Neural Network for now and come back later, and at the end, we might rely on few external sources to learn about topics like RLHF. 
 
-- 01: [Warmup(Bayes Linear Regression, Kernel Trick, Gaussian Process)](/pai/warmup-1); Chapter 2,3,4 of PAI, Chapter 7 to be added in future
+- 01: [Warmup(Bayes Linear Regression, Kernel Trick, Gaussian Process)](); Chapter 2,3,4 of PAI, Chapter 7 to be added in future
 - 02: [Active Learning; Chapter 8]() of PAI
 - 03: []();Chapter 9, 10 of PAI
 - 04: []();Chapter 11 of PAI

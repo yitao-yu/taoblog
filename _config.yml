@@ -28,7 +28,7 @@ twitter_username:
 github_username:  yitao-yu
 
 header_pages:
-  - about.markdown
+  - about.markdown pai-00notes.markdown
 
 # Build settings
 theme: minima
