@@ -29,7 +29,11 @@ github_username:  yitao-yu
 
 header_pages:
 <<<<<<< HEAD
+<<<<<<< HEAD
   - about.markdown pai-00notes.markdown
+=======
+  - about.md
+>>>>>>> parent of 8371b49 (update config)
 =======
   - about.md
 >>>>>>> parent of 8371b49 (update config)
