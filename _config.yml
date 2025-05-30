@@ -32,7 +32,7 @@ header_pages:
   - pai.markdown
 
 # Build settings
-theme: minima
+theme: null
 plugins:
   - jekyll-feed
 
