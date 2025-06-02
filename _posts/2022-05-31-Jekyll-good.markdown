@@ -32,7 +32,7 @@ Wordpress是有一些静态化插件的，但对于在docker容器里面运行�
 
 Update 2025: 
 
-To support math expressions, I switched to a [local template(of minima) by MichaelCurrin](https://github.com/MichaelCurrin/jekyll-blog-demo/tree/master) and edited `_layouts/default.html`. By doing that, I injected MathJax to my Template that it can handle latex. Check out [this Medium Post](https://medium.com/coffee-in-a-klein-bottle/creating-a-mathematics-blog-with-jekyll-78cdee0339f3) for instruction. 
+To support math expressions, I switched to a [local template (of minima) by MichaelCurrin](https://github.com/MichaelCurrin/jekyll-blog-demo/tree/master) and edited `_layouts/default.html`. By doing that, I injected MathJax to my template so that it can handle latex. Check out [this Medium Post](https://medium.com/coffee-in-a-klein-bottle/creating-a-mathematics-blog-with-jekyll-78cdee0339f3) for instruction. This also allows me to make changes to the template drastically. Maybe I'll do that later. 
 
 
 [wordpress.com]: https://wordpress.com/
