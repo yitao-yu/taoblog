@@ -29,15 +29,20 @@ github_username:  yitao-yu
 
 header_pages:
   - about.markdown
-  - pai.markdown
+  - pai.md
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
-  # - jekyll-mathjax-csp
-  # - jekyll-spaceship
+  - jekyll-katex
 
+katex:
+  delimiters:
+    - display: ['$$', '$$']  # Display math with $$...$$
+    # - display: ['\\[', '\\]'] # Display math with \[...\]
+    - inline: ['$','$', true] # Inline math with $...$ (with true for enable_dollar_delimiter)
+    # - inline: ['\\(', '\\)'] # Inline math with \(...\)
 
 # Exclude from processing.
 # The following items will not be processed, by default.
