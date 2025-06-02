@@ -28,3 +28,5 @@ Plan: We would skip Bayesian Neural Network for now and come back later, and at 
 - 06: []();Chapter 12 of PAI
 - 07: []();Chapter 13 of PAI
 - Extension: To Be Decided
+
+Currently, the math expressions are not working. That's because how I set up my blog. However, I'll proceed and apply the fix in the future by using a [custom version of the minima theme](https://medium.com/coffee-in-a-klein-bottle/creating-a-mathematics-blog-with-jekyll-78cdee0339f3) and [its update fix](https://www.martinklein.co/2022/02/18/latex-in-jekyll.html). 
