@@ -35,7 +35,8 @@ header_pages:
 theme: minima
 plugins:
   - jekyll-feed
-  - jekyll-mathjax-csp
+  # - jekyll-mathjax-csp
+  # - jekyll-spaceship
 
 
 # Exclude from processing.

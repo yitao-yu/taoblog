@@ -16,7 +16,8 @@ gem "minima", "~> 2.5"
 # If you have any plugins, put them here!
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
-  gem 'jekyll-mathjax-csp', '~> 2.0'
+  # gem 'jekyll-mathjax-csp', '~> 2.0'
+  # gem 'jekyll-spaceship', '~> 0.10.2'
 end
 
 gem "webrick"
