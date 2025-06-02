@@ -36,6 +36,27 @@ theme: minima
 plugins:
   - jekyll-feed
 
+kramdown:
+  math_engine: mathjax
+  input: GFM # or 'GFM' for GitHub Flavored Markdown
+  syntax_highlighter: rouge
+  parse_block_html: true
+  # Important for MathJax:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  # Disable LaTeX-style math processing by kramdown itself
+  # This is crucial so MathJax can handle it.
+  extensions: []
+  math_engine_opts:
+    # Don't convert tildes and underscores within math to HTML tags
+    enable_dollar_delimiter: true
+    # Enable dollar signs for inline math
+    disable_math_indented: true
+    disable_math_block: true
+    disable_math_inline: true
+
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
