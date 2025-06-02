@@ -22,7 +22,7 @@ title: TAO-blog
 email: 
 description: >- # this means to ignore newlines until "baseurl:"
   Welcome to my blog. This serves as my journal and places to store random writings. Hope y'all find those interesting. 
-baseurl: "taoblog" # the subpath of your site, e.g. /blog
+baseurl: "/taoblog" # the subpath of your site, e.g. /blog
 url: "yitao-yu.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
 github_username:  yitao-yu
