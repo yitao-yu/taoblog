@@ -6,3 +6,6 @@ group: pai
 ---
 
 
+## Entropy and all that
+
+## Maximizing Information Gain

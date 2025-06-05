@@ -15,7 +15,7 @@ Ultimately, our goal from reading the book is to know about concepts like Gaussi
 
 Another course that might be of interest is [*Reinforcement Learning and Optimal Control*](https://www.mit.edu/~dimitrib/RLbook.html) by Dimitri P. Bertsekas, which would provide more details about different problems in Reinforcement Learning. This course might also be more friendly to people with background in control theory. 
 
-My notetaking is mostly a cheatsheet for future me and I'll go through some of the proofs in the book that is not entirely clear to me(and some of them are left in the book as exercise). Hopefully, a part of them can be helpful to you. 
+My notetaking is mostly a cheatsheet for future me and I'll go through some of the proofs in the book that is not entirely clear to me(and some of them are left in the book as exercise). A major part of the note is generated from back and forth conversation with LLMs while reading the book. Hopefully, my note can be helpful to you. 
 
 ## My notes
 
