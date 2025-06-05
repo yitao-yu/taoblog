@@ -29,7 +29,7 @@ And we wish to find local maxima of $\alpha$ (action/prediction mapped to standa
 
 $$E[r] = c_1 \int_\alpha^\infty (z-\alpha) \phi(z) dz + c_2 \int_{-\infty}^\alpha (\alpha-z) \phi(z) dz$$
 
-We need to rely on the Leibniz Rule  [*1*] to calculate the derivative: 
+We need to rely on the Leibniz Rule [*1*](#leibniz-rule) to calculate the derivative: 
 
 $$\frac{d }{d \alpha} \int^{b(\alpha)}_{a(\alpha)} f(z,\alpha) dz = f(b(\alpha), \alpha) \frac{db}{d\alpha} - f(a(\alpha), \alpha) \frac{da}{d\alpha} + \int^{b(\alpha)}_{a(\alpha)} \frac {\delta f } {\delta \alpha} dz$$
 
@@ -47,20 +47,7 @@ $$c_2\Phi(\alpha) - c_1*(1-\Phi(\alpha)) = 0\\
 \to\Phi(\alpha) = c_1/(c_1+c_2)\\
 \to a^* = \mu + \sigma*\Phi^{-1}[\frac{c_1}{c_1+c_2}]$$
 
-
-## Linear Regression
-
-## Kernel Trick
-
-## Gaussian Process
-
-
-
-## Bayesian Neural Network(*Ch 4*)
-
-*Later*
-
-[*1*]: **Leibniz Rule** 
+#### Leibniz Rule
 
 Case 1(constant bounds) is intuitive: 
 
@@ -75,3 +62,10 @@ $$u'=\frac{d}{d\alpha}\int_{a(\alpha)}^{b(\alpha)}f(z,\alpha)dz = lim_{h\to0}\fr
 By adding and subtracting $\int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz$: 
 
 $$u'= lim_{h\to0}\frac{1}{h}[\int_{a(\alpha+h)}^{b(\alpha+h)} f(z,\alpha+h) dz - \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz \\+ \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz - \int_{a(\alpha)}^{b(\alpha)} f(z,\alpha) dz] \\= f(b(\alpha,\alpha)) \frac{db}{d\alpha} −f(a(α),α) \frac{da}{d\alpha} + \int_{a(\alpha)}^{b(\alpha)}\frac{\delta f(z,\alpha)} {\delta \alpha} dz$$
+
+
+## Linear Regression
+
+## Kernel Trick
+
+## Gaussian Process
