@@ -43,8 +43,8 @@ $$\frac{d L_2}{d \alpha} =  c_2(-f(\alpha, \alpha)+\int_{-\infty}^\alpha\phi(z)d
 
 Sum of the derivative is zero would give us the optimal decision(mapped from optimal $z$): 
 
-$$c_2\Phi(\alpha) - c_1*(1-\Phi(\alpha)) = 0\\
-\to\Phi(\alpha) = c_1/(c_1+c_2)\\
+$$c_2\Phi(\alpha) - c_1*(1-\Phi(\alpha)) = 0\newline
+\to\Phi(\alpha) = c_1/(c_1+c_2)\newline
 \to a^* = \mu + \sigma*\Phi^{-1}[\frac{c_1}{c_1+c_2}]$$
 
 #### Leibniz Rule
@@ -53,7 +53,9 @@ Case 1(constant bounds) is intuitive:
 
 $u'(x) = \int_a^b f_x(x,t) dt$ where $u(x) = \int_a^bf(x,t)dt$
 
-$u'(x) = lim_{h\to0} \frac{u(x+h) - u(h)}{h}\\ = \int_a^b lim_{h\to0}\frac{f(x+h,t)-f(h,t)}{h}dt\\ = \int_a^b \frac{df(x,t)}{dx} dt$
+$u'(x) = lim_{h\to0} \frac{u(x+h) - u(h)}{h}\newline
+ = \int_a^b lim_{h\to0}\frac{f(x+h,t)-f(h,t)}{h}dt\newline
+ = \int_a^b \frac{df(x,t)}{dx} dt$
 
 Case 2(function bounds) can be derived with the same method: 
 
@@ -61,8 +63,9 @@ $$u'=\frac{d}{d\alpha}\int_{a(\alpha)}^{b(\alpha)}f(z,\alpha)dz = lim_{h\to0}\fr
 
 By adding and subtracting $\int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz$: 
 
-$$u'= lim_{h\to0}\frac{1}{h}[\int_{a(\alpha+h)}^{b(\alpha+h)} f(z,\alpha+h) dz - \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz \\+ \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz - \int_{a(\alpha)}^{b(\alpha)} f(z,\alpha) dz] \\= f(b(\alpha,\alpha)) \frac{db}{d\alpha} −f(a(α),α) \frac{da}{d\alpha} + \int_{a(\alpha)}^{b(\alpha)}\frac{\delta f(z,\alpha)} {\delta \alpha} dz$$
-
+$$u'= lim_{h\to0}\frac{1}{h}[\int_{a(\alpha+h)}^{b(\alpha+h)} f(z,\alpha+h) dz - \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz \newline
++ \int_{a(\alpha)}^{b(\alpha)}f(z,\alpha+h)dz - \int_{a(\alpha)}^{b(\alpha)} f(z,\alpha) dz] \newline 
+= f(b(\alpha,\alpha)) \frac{db}{d\alpha} −f(a(α),α) \frac{da}{d\alpha} + \int_{a(\alpha)}^{b(\alpha)}\frac{\delta f(z,\alpha)} {\delta \alpha} dz$$
 
 ## Linear Regression
 
