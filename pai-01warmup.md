@@ -88,11 +88,11 @@ $$\log p(w | x_{1:n}, y_{1:n}) = \log p(w) + \textcolor{red}{\log p(y_{1:n}|x_{1
 
 **Deriving least square:**
 
-$$\hat{w}_{ls} = \argmin_w ||y-X_w||^2_2 = (X^TX)^{-1}X^Ty$$
+$$\hat{w}_{ls} = argmin_w ||y-X_w||^2_2 = (X^TX)^{-1}X^Ty$$
 
 The sum of each individual term is what we wish to minimize(i.i.d.) in MLE. 
 
-$\log p(y_i|x_i,w) = log \frac{1}{\sqrt(2 \pi \sigma_n^2)} \exp(-\frac{1}{2 \sigma^2_n} (y_i - w^T x_i)^2)$ 
+$\log p(y_i\|x_i,w) = log \frac{1}{\sqrt(2 \pi \sigma_n^2)} \exp(-\frac{1}{2 \sigma^2_n} (y_i - w^T x_i)^2)$ 
 
 Problem(2.2): Prove the variance for the noise term is: $\sigma_n^2 = \frac{1}{n} \Sigma_i (y_i-w^Tx_i)^2$
 
@@ -106,17 +106,24 @@ $$\log p = -\frac{n}{2} \log(2\pi \sigma_n^2) - \frac{1}{2\sigma_n^2} \Sigma_i(y
 
 *The book(2.9) expanded the term of full posterior and showed that the full posterior is also gaussian(quadratic form: $w^TAw+B^Tw+C$).(The grey part is merged into the constant term)*
 
-$$\log  p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} [\sigma_p^{-2} ||w||^2_2 + \sigma_n^{-2} \textcolor{red}{||y-Xw||^2_2}]\\ 
-\to \textcolor{red}{||y-Xw||^2_2} =  w^TX^TXw + 2y^TXw + \textcolor{grey}{y^Ty}\\ \to \log  p(w | x_{1:n}, y_{1:n}) = -1/2 w^T \Sigma^{-1} w + w^T \Sigma^{-1}\mu + const \\ 
-\to w_{|x,y} \sim N(\mu, \Sigma) \\ \\\mu = \sigma_n^{-2} \Sigma X^Ty; \\\Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^-1$$
+$$
+\begin{aligned}
+&\log p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} [\sigma_p^{-2} ||w||^2_2 + \sigma_n^{-2} \textcolor{red}{||y-Xw||^2_2}] \\
+&\to \textcolor{red}{||y-Xw||^2_2} =  w^TX^TXw + 2y^TXw + \textcolor{grey}{y^Ty} \\
+&\to \log p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} w^T \Sigma^{-1} w + w^T \Sigma^{-1}\mu + \text{const} \\
+&\to w_{|x,y} \sim N(\mu, \Sigma) \\ 
+&\mu = \sigma_n^{-2} \Sigma X^Ty \\
+&\Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^{-1}
+\end{aligned}
+$$
 
 We go back to deriving the ridge loss(and the $\lambda$ term): 
 
-$$\hat{w}_{ridge} = \argmin_w ||y-X_w||^2_2 + \lambda ||w||^2_2 = (X^TX + \lambda I)^{-1} X^T y$$
+$$\hat{w}_{ridge} = argmin_w ||y-X_w||^2_2 + \lambda ||w||^2_2 = (X^TX + \lambda I)^{-1} X^T y$$
 
 $$\hat{w}_{MAP} = argmax -\frac{1}{2} \sigma_p^{-2} ||w|| + \sigma_n^{-2} ||y-Xw||+const \\ = argmin ||y-Xw|| + \frac{\sigma_n^2}{\sigma_p^2}$$
 
-*We would skip Lasso(Example 2.2)*: If we would assume a Lasso prior $w\sim Laplace(0,h)$, we'll acquire a Lasso term instead of ridge term: $\frac{\sigma_n^2}{h}||w||^1_1$.
+*We would skip Lasso(Example 2.2)*: If we would assume a Lasso prior $w\sim Laplace(0,h)$, we'll acquire a Lasso term instead of ridge term: $\frac{\sigma_n^2}{h}\|\|w\|\|^1_1$.
 
 Recall the expanded loss: $\frac{1}{2} w^T A w - b^Tw$ where $A = \sigma_n^{-2}X^TX + \sigma_p^{-2}I; b = \sigma_n^{-2}X^Ty$ 
 
@@ -139,7 +146,7 @@ p(f^*|x^*,x_{1:n},y_{1:n}) = \int p(f^*|w,x^*) p(w|x_{1:n},y_{1:n}) dw\\
 p(y^*|x^*,x_{1:n},y_{1:n}) = \int p(y^*|f*) p(f^*|x^*,x_{1:n},y_{1:n}) dw
 $$
 
-where $p(y^*|f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
+where $p(y^*\|f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
 
 This would allow us to have a **varying distribution over the feature space**: more certain when there are more observed data around the test point, less certain when there are less. The book didn't go into a lot of detail and I wish to show this feature. 
 
