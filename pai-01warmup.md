@@ -74,6 +74,120 @@ u'= lim_{h\to0}\frac{1}{h}[\int_{a(\alpha+h)}^{b(\alpha+h)} f(z,\alpha+h) dz - \
 
 ## Linear Regression
 
-## Kernel Trick
+The section II of the book is about fitting model to the perception(or data) about the world. The first method introduced is, of course, linear regression: $f(x;w) = w^T x$. 
+
+This part of the book is about introducing concepts like MLE vs MAP, and aleatoric vs epistemic uncertainty. The book shows that the MLE estimate of the weight in the linear regression model is equivalent to ordinary least square(or minimizing MSE). And the MAP estimate(with a Gaussian prior) is equivalent to minimizing the ridge loss. 
+
+For proving that, key assumptions are:
+- dataset is i.i.d. 
+- Gaussian noise
+
+By Bayes rule, we can write the full posterior that we are minimizing. (MLE would just minimize the likelihood term, marked red, and MAP would minimize the full posterior term)
+
+$$\log p(w | x_{1:n}, y_{1:n}) = \log p(w) + \textcolor{red}{\log p(y_{1:n}|x_{1:n}, w)} + const$$
+
+**Deriving least square:**
+
+$$\hat{w}_{ls} = \argmin_w ||y-X_w||^2_2 = (X^TX)^{-1}X^Ty$$
+
+The sum of each individual term is what we wish to minimize(i.i.d.) in MLE. 
+
+$\log p(y_i|x_i,w) = log \frac{1}{\sqrt(2 \pi \sigma_n^2)} \exp(-\frac{1}{2 \sigma^2_n} (y_i - w^T x_i)^2)$ 
+
+Problem(2.2): Prove the variance for the noise term is: $\sigma_n^2 = \frac{1}{n} \Sigma_i (y_i-w^Tx_i)^2$
+
+$$\log p = -\frac{n}{2} \log(2\pi \sigma_n^2) - \frac{1}{2\sigma_n^2} \Sigma_i(y_i - w^T x_i)^2 \\
+\to \frac{d \log L}{d \sigma_n^2} = -\frac{n}{2\sigma_n^2}+\frac{\Sigma_i(...)}{2(\sigma_n^2)^2} = 0 \\
+\to \sigma_n^2 = \frac{1}{n} \Sigma_i(y_i-w^Tx_i)^2$$
+
+*We would skip writing the actual MLE estimate since it'll be similiar to writing MAP estimate(which we'll do later): taking derivative of loss.*
+
+**Deriving ridge regression:**
+
+*The book(2.9) expanded the term of full posterior and showed that the full posterior is also gaussian(quadratic form: $w^TAw+B^Tw+C$).(The grey part is merged into the constant term)*
+
+$$\log  p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} [\sigma_p^{-2} ||w||^2_2 + \sigma_n^{-2} \textcolor{red}{||y-Xw||^2_2}]\\ 
+\to \textcolor{red}{||y-Xw||^2_2} =  w^TX^TXw + 2y^TXw + \textcolor{grey}{y^Ty}\\ \to \log  p(w | x_{1:n}, y_{1:n}) = -1/2 w^T \Sigma^{-1} w + w^T \Sigma^{-1}\mu + const \\ 
+\to w_{|x,y} \sim N(\mu, \Sigma) \\ \\\mu = \sigma_n^{-2} \Sigma X^Ty; \\\Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^-1$$
+
+We go back to deriving the ridge loss(and the $\lambda$ term): 
+
+$$\hat{w}_{ridge} = \argmin_w ||y-X_w||^2_2 + \lambda ||w||^2_2 = (X^TX + \lambda I)^{-1} X^T y$$
+
+$$\hat{w}_{MAP} = argmax -\frac{1}{2} \sigma_p^{-2} ||w|| + \sigma_n^{-2} ||y-Xw||+const \\ = argmin ||y-Xw|| + \frac{\sigma_n^2}{\sigma_p^2}$$
+
+*We would skip Lasso(Example 2.2)*: If we would assume a Lasso prior $w\sim Laplace(0,h)$, we'll acquire a Lasso term instead of ridge term: $\frac{\sigma_n^2}{h}||w||^1_1$.
+
+Recall the expanded loss: $\frac{1}{2} w^T A w - b^Tw$ where $A = \sigma_n^{-2}X^TX + \sigma_p^{-2}I; b = \sigma_n^{-2}X^Ty$ 
+
+And we can write the MAP estimate: 
+
+$$\Delta_w L = Aw-b = 0 \to Aw = b \\ [X^TX + \frac{\sigma_n^2}{\sigma_p^2}I]w = X^T y \\ \to \hat{w}_{MAP} = [X^TX +\frac{\sigma_n^2}{\sigma_p^2}I]X^Ty$$
+
+**Prediction with the full weight posterior(2.1.2): Bayeisna LR**
+
+The book has also mentioned that instead of using a point estimate of the weight, we can use the full posterior of the weight to acquire a distribution of possible target values, instead of the best estimated target value. 
+
+$$f^* | x^*, x_{1:n}, y_{1:n} \sim N(\mu^T x^*, x^{*T} \Sigma x^*) \\
+y^*| x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*, x^{*T} \Sigma x^*+\sigma_n^2)$$
+
+$f^*$ is the **actual distribution or BLR prediction**, however, $y^*$ is the **predicted label**, taking account of the the data generation noise(gaussian noise). I want to help with this distinction:
+
+$$
+p(f^*|x^*,x_{1:n},y_{1:n}) = \int p(f^*|w,x^*) p(w|x_{1:n},y_{1:n}) dw\\
+
+p(y^*|x^*,x_{1:n},y_{1:n}) = \int p(y^*|f*) p(f^*|x^*,x_{1:n},y_{1:n}) dw
+$$
+
+where $p(y^*|f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
+
+This would allow us to have a **varying distribution over the feature space**: more certain when there are more observed data around the test point, less certain when there are less. The book didn't go into a lot of detail and I wish to show this feature. 
+
+First we recall that w's posterior distribution is Gaussian.  This is not entirely the same because we chose to use a isotropic prior: $w\sim N(\mu,\Sigma_0); \Sigma_0 = \alpha^{-1}I$. 
+
+$$
+w_{|x,y} \sim N(\mu_N, \Sigma_N) \\
+\mu_N = \Sigma_N (\Sigma_0^{-1}\mu_0 + \sigma_n^{-2}X^Ty)\\
+\Sigma_N = (\Sigma_0^{-1} + \sigma_n^{-2}X^TX)^{-1}
+$$
+
+<!-- 
+$$w_{|x,y} \sim N(\mu, \Sigma) \\ 
+\mu = \sigma_n^{-2} \Sigma X^Ty; \\
+\Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^{-1}$$ 
+-->
+
+$X^TX$ would represent the density of observed data point. With more data points(larger $i$),$\Sigma_i x_i x_i^T$ tends to have a large value, and thus a larger $X^T X$ matrix. This would result in smaller eigen value for $\Sigma_N$, thus lower variance along the principal axes of the distribution. 
+
+In this process, the center of the posterior distribution or data generation noise are not changed. The change in variance is brought in merely by the $X^TX$ term. 
+
+*Here we skip the online recursive BLR, mostly the part about its computational complexity(2.1.3) because it is not entirely clear to me.*
+
+**Aleatoric and Epistemic Uncertainty(2.2)**
+
+Aleatoric and Epistemic Uncertainty is different from bias-variance tradeoff from applied ML or data science. Bias-variance tradeoff is about choosing the "right" complexity of the model. Aleatoric and Epistemic Uncertainty is about how uncertain we are about our prediction and where does these uncertainty comes from. 
+
+Aleatoric and Epistemic Uncertainty are caused by different things. 
+
+Recall from BLR: 
+$$y^*| x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*,\textcolor{blue}{\sigma_n^2}+\textcolor{red}{x^{*T} \Sigma x^*})$$
+
+The blue part(the data generation noise term) is aleatoric uncertainty, or uncertainty caused by labels. The blue part(previously the variance for BLR prediction) is epistemic uncertainty due to lack of data(it grows larger when there are less data);. 
+
+Let's rewrite the two term of the variance as the book did(2.18) so that we can expand the idea to models other than LR: 
+
+$$Var(y^*|x^*) = \textcolor{blue}{E_\theta[Var_{y^*}[y^*|x^*,\theta]}+\textcolor{red}{Var_{\theta}[E_{y^*}[y^*|x^*,\theta]]}$$
+
+I quote the book(with some modification): "Aleatoric uncertainty is expected variance of $y^*$ across all models, and Epistemic uncertainty is the expected variance of mean prediction under each model. "
+
+<!-- Come back Later -->
+
+## Nonlinear LR: Kernel Trick
+
+Most of the times our observed feature and target is not linear(or they might only be linear after we mapped them to a feature space). 
+
+## Karman Filter
 
 ## Gaussian Process
+
+*We would skip the Bayesian NN part in the book(for now). However, I'm sure that I will come back to this part because the topic is interesting to me.*

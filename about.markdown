@@ -21,6 +21,12 @@ I appreciate the helps from the community and I do have things that I want to pa
 
 - For: Reapeatable(in terms of the workflow implemented); Assessable(in terms of automatically assessing the performance, if needed throughout time) ; Stable *if can*(in terms of the performance itself can be relatively robust on datasets for similar purpose or robust throughout time)
 
+# Update(2025)
+
+When I started this blog, there was no LLMs. In the age of LLMs(and like in the age of other innovations for helping people to understand and use knowledge easier, like search engine), I believe that blogging is about asking the right question rather than knowing the exact thing at the moment. 
+
+Also, think critically and interact with LLMs like an agent: the LLMs are merely another source. Sometimes they hallucinate and make things up, and some times their feedback can be inspiring as ideas but not exactly right. 
+
 [yitao-yu]: https://yitao-yu.github.io
 [freearch]: https://www.zhihu.com/people/jefftian/posts?
 
