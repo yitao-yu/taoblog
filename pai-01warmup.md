@@ -131,7 +131,7 @@ And we can write the MAP estimate:
 
 $$\Delta_w L = Aw-b = 0 \to Aw = b \\ [X^TX + \frac{\sigma_n^2}{\sigma_p^2}I]w = X^T y \\ \to \hat{w}_{MAP} = [X^TX +\frac{\sigma_n^2}{\sigma_p^2}I]X^Ty$$
 
-**Prediction with the full weight posterior(2.1.2): Bayeisna LR**
+**Prediction with the full weight posterior(2.1.2): Bayeisna LR** (*This part needs edit because I think I introduced a prior when I shouldn't need to*)
 
 The book has also mentioned that instead of using a point estimate of the weight, we can use the full posterior of the weight to acquire a distribution of possible target values, instead of the best estimated target value. 
 
@@ -191,10 +191,78 @@ I quote the book(with some modification): "Aleatoric uncertainty is expected var
 
 ## Nonlinear LR: Kernel Trick
 
-Most of the times our observed feature and target is not linear(or they might only be linear after we mapped them to a feature space). 
+Most of the times our observed feature, $x$ , and target is not linear, but they might be linear in some feature space, $\phi(x)$. We would transform the linear regression into: $f=\phi w$, $w \sim N(0,\sigma_p^2 I)$. We would acquire this prior about the function given input: 
 
-## Karman Filter
+$$f\| X \sim N(0,\sigma_p^2 \phi \phi^T)$$
+
+It can be, however, costly to figure out a best set of feature and compute the feature vector for each entry during training. 
+
+The book used these letter to denote dimensions: 
+
+$d$: size of the observed features. 
+
+$e$: size of the mapped features. (or equivalently, weight vector). $e$ can be $O(d^{power})$ if using polynomial features, so it can be large. 
+
+$n$: size of the dataset/entry. Actually on a second thought this can also be a large number. Maybe it can be 100, 1k or 10k times $d$, so $O(d)$, to prevent overfit? 
+
+The feature matrix(concatenation of feature vector for each entry) is $n\times e$; the Kernel Matrix(see below) is $n \times n$. The dataset it self we worked with in simple LR is $n \times d$. 
+
+**Kernel Function**
+
+$$k(x,x') = \sigma_p^2 \phi(x)^T \phi(x') = Conv(f(x), f(x'))$$
+
+**Kernel Matrix(nxn)**
+
+The covariance matrix for the previous prior is Kernel Matrix. The fact that it is $n\times n$ crucial since **we can operate with this kernel matrix directly with the training dataset, instead of computing the feature vectors $\phi$ for every entry and compute kernel matrix from them**. This is the "Kernel Trick". **Also, since the feature vector is not computed at all, we are not finding optimal weights, rather, we are finding an optimal Kernel Matrix.** 
+
+$$K = \sigma_p^2 \phi \phi^T \\ K_{ij} = k(x_i, x_j); i,j<n$$
+
+*The book says kernel matrix is a finite view of the kernel function. It means that kernel matrix contains values for every entry pair in the training dataset. At inference or testing, we will work with unobserved input(outside of the training dataset), and the book will take us into it(2.4.1 and 4.1).*
+
+*Also, note that this is just a prior and the actual target value donot have to be center around zero, just like the mean weight of a simple LR model won't necessarily be zero.*
+
+The book listed the potential benefit of the kernel trick(2.4.2). Kernel trick will be revisited in Ch. 4(GP) so we'll come back to it. 
+
+<!-- >1. For certain feature transformations φ, we may be able to find an easier to compute expression equivalent to φ(x)⊤φ(x′). 
+>2. If this is not possible, we could approximate the inner product by an easier to compute expression. 
+>3. Or, alternatively, we may decide not to care very much about the exact feature transformation and simply experiment with kernels that induce some feature space (which may even be infinitely dimensional).  -->
+
+
+**Kernelized Bayesian LR(2.4.1)**
+
+> **Feature matrix:** $\hat{\Phi} = \begin{bmatrix} \Phi_{n \times e} \\ \phi(x^*)^T \end{bmatrix}$
+
+$n\times e$ design matrix/training dataset, and the vecotr for unobserved data point
+
+>**target groundtruth:** $\hat{y} = \begin{bmatrix} y \\ y^* \end{bmatrix}$
+
+*$y^*$ is not observable, unless in evaluation/testing.*
+
+>**noise-free prediction:** $\hat{f} = \begin{bmatrix}f \\ f^* \end{bmatrix}$
+
+>(joint) kernel matrix for training and testing**: $\hat{K} = \sigma_p^2 \hat{\Phi} \hat{\Phi}^T$
+
+>Prior adding data genereation noise: $\hat{y}\|X,x^* \sim N(0,\hat{K}+\sigma_n^2 I)$
+
+**Problems to be addressed:**
+
+- Here, the distribution is not conditioned on any observed $y$. We'll do that in GP. 
+
+- Also, the point of the kernel trick is that we don't have to compute the feature vector on the training set(which is larger than a test set or a few unobserved points). A large chunk of $\hat{K}$ is actually $K$, so we can simply reuse these values. In reality, we probably don't even need to compute feature vector at all: 
+
+> 1. For certain feature transformations φ, we may be able to find an easier to compute expression equivalent to $\phi(x)⊤\phi(x′)$. (2.4.2)
+
+We'll come back to it. 
+
+## Filtering/Kalman Filter
+
+*This chapter is relatively short. The idea of filtering is very similiar to markov chain. I don't think I would add a lot of things to what the book said for this chapter. But I'll attach my notetaking:*
 
 ## Gaussian Process
+
+[GP visualization website](https://www.infinitecuriosity.org/vizgp/)
+
+
+-------
 
 *We would skip the Bayesian NN part in the book(for now). However, I'm sure that I will come back to this part because the topic is interesting to me.*
