@@ -465,4 +465,4 @@ Representer Theorem are used across methods that use kernel trick. It shows that
 
 -------
 
-*We would skip the Bayesian NN part in the book(for now). However, I'm sure that I will come back to this part because the topic is interesting to me.*
+*We would skip the Bayesian NN part in the book(for now).*
