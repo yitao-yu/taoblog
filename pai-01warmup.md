@@ -250,7 +250,7 @@ $n\times e$ design matrix/training dataset, and the vecotr for unobserved data p
 
 - Here, the distribution is not conditioned on any observed $y$. We'll do that in GP. 
 
-- Also, the point of the kernel trick is that we don't have to compute the feature vector on the training set(which is larger than a test set or a few unobserved points). A large chunk of $\hat{K}$ is actually $K$, so we can simply reuse these values. In reality, we probably don't even need to compute feature vector at all: 
+- Also, the point of the kernel trick is that we don't have to compute the feature vector on the training set(which is larger than a test set or a few unobserved points). A large chunk of $\hat{K}$ is actually $K$, so we can simply reuse these values. In reality, we probably don't even need to compute feature vector at all(even for this linear kernel): 
 
 > 1. For certain feature transformations φ, we may be able to find an easier to compute expression equivalent to $\phi(x)⊤\phi(x′)$. (2.4.2)
 
@@ -425,6 +425,24 @@ Book discussed how to combine/map existing kernels to create new kernels(*4.3.2*
 - isotropic: kernel depends only on distance of pts. $k(x,x') = \hat(k)(\|\|x - x'\|\|)$
 
 *RBF is isotropic(and thus also stationary), EXP is only stationary. Linear kernel is neither.* 
+
+We may go back to the benefits of kernel tricks(*2.4.2*), which we mentioned in Non-linear LR. 
+
+```
+1. For certain feature transformations ϕ, we may be able to find an easier to compute expression equivalent to ϕ(x)⊤ϕ(x′).
+
+2. If this is not possible, we could approximate the inner product by an easier to compute expression.
+
+3. Or, alternatively, we may decide not to care very much about the exact feature transformation and simply experiment with kernels that induce some feature space (which may even be infinitely dimensional).
+```
+
+2 and 3 are RBF and Laplace kernel. Both don't have an explicit form of feature vector or inner product during computation, yet can be proven to be infinite-dimensional. 
+
+1 is a trick that we can use for linear(polynomial) kernel. 
+
+> For a feature vector up degree m, and for a constant factor: $\phi(x)^T \phi(x') = (1+x^Tx')^m$(Fact 2.4, *2.4.2*)
+
+This reduces the computational cost from $O(d^{power})$ to $O(d)$. 
 
 **Sampling(4.2)**
 
