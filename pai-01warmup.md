@@ -339,6 +339,7 @@ $$y^*\|x^* \sim N(\mu(x^*), k(x^*, x^*)+\sigma^2_n)$$
 *I am not 100% sure if this is a prior or predictive posterior. I lean to the idea that it is a prior because it is not conditioned on training data. Futhermore, the book will later obtain a posterior with $\mu'(.)$ and $k'(.,.)$.*
 
 The previously referenced fig 4.1 depicted a predictive posterior for sure. However, the existence of the two variance terms is also depicted in the above variance term.
+
 **Learning and Inference(*4.1*)**
 
 The joint distribution between observations(training) and Noise-free prediction: 
