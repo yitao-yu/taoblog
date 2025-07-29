@@ -116,7 +116,7 @@ The bound is not $\Pi_t (1-\frac{\delta}{\pi_t})$ because we *do not* assume ind
 
 *This would, with further proofs, give us sublinear regret in theorem 9.3.*
 
-**Freqeuntist Setting** means that we assume no prior about $f^*$. Rahter, we assume $f^* \in H_k(X)$ or $\vert \vert f^*\vert \vert_k < \infty$, recall the RKHS and function's norm in RKHS. (This can be shown to be contradictory to the bayesian assumption, according to the book. )
+**Freqeuntist Setting** means that we assume no prior about $f^*$. Rahter, we assume $f^* \in H_k(X) \leftrightarrow \vert \vert f^*\vert \vert_k < \infty$, recall the RKHS and function's norm in RKHS. (This can be shown to be contradictory to the bayesian assumption, according to the book. )
 
 *I would not pursue proofs for the frequentist setting unless I have more time, but a rough skim through Chowdhury and Gopalan 2017 shows that the norm of the error sequence $\epsilon_{1:t}$ is bounded.*
 
