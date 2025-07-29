@@ -9,21 +9,22 @@ group: pai
 
 Choosing the optimal action is about choosing the action that would maximize the expected reward. *We are interested in learning the reward function in later parts.*
 
-**Optimal Decision Rule**: $a^{*}(x) = \text{argmax}_a E[y\|x] [r(y,a)]$. 
+**Optimal Decision Rule**: $a^{*}(x) = \text{argmax}_a E[y
+\vert x] [r(y,a)]$. 
 
 Equivalently, to see $-r$ as loss, we can also also acquire the optimal decision by minimizing the loss and it's a regression problem if we are making a decision in a continuous space. 
 
 The book discussed mostly how square loss(symetrical reward) and asymmetrical loss would affect the optimal decision. (Example 1.29)
 
-It is quite clear and intuitive that the optimal action with a symetrical reward is the mean: $a^⋆(x) = E[y \| x]$ where loss is $-r(y,a) = (y-a)^2$. The derivation should be similiar to the following case. 
+It is quite clear and intuitive that the optimal action with a symetrical reward is the mean: $a^⋆(x) = E[y \vert  x]$ where loss is $-r(y,a) = (y-a)^2$. The derivation should be similiar to the following case. 
 
 *Problem 1.13*: We then consider the asymmetrical loss/reward: $-r(y,a) = c_1 * max[y-a,0] + c_2 * max[a-y,0]$
 
 The expected reward is:  
 
-$$E[r] = c_1 \int_a^\infty (y-a) p(y\|x) dy + c_2 \int_{-\infty}^a (a-y) p(y\|x) dy$$
+$$E[r] = c_1 \int_a^\infty (y-a) p(y\vert x) dy + c_2 \int_{-\infty}^a (a-y) p(y\vert x) dy$$
 
-Here we assume that the random variable $y\|x \sim N(\mu, \sigma^2)$ (the observation noise follows a normal distribution). We would further map this distribution to standard gaussian: $z = \frac{y-\mu}{\sigma} \sim Z(0,1)$.
+Here we assume that the random variable $y\vert x \sim N(\mu, \sigma^2)$ (the observation noise follows a normal distribution). We would further map this distribution to standard gaussian: $z = \frac{y-\mu}{\sigma} \sim Z(0,1)$.
 
 And we wish to find local maxima of $\alpha$ (action/prediction mapped to standard gaussian) so that $\frac{d E[r(y,\alpha)]}{d\alpha}  = 0$, where $\alpha = \frac{a - \mu}{\sigma}$. And we can rewrite the reward into: 
 
@@ -84,15 +85,15 @@ For proving that, key assumptions are:
 
 By Bayes rule, we can write the full posterior that we are minimizing. (MLE would just minimize the likelihood term, marked red, and MAP would minimize the full posterior term)
 
-$$\log p(w | x_{1:n}, y_{1:n}) = \log p(w) + \textcolor{red}{\log p(y_{1:n}|x_{1:n}, w)} + const$$
+$$\log p(w \vert  x_{1:n}, y_{1:n}) = \log p(w) + \textcolor{red}{\log p(y_{1:n}\vert x_{1:n}, w)} + const$$
 
 **Deriving least square:**
 
-$$\hat{w}_{ls} = argmin_w ||y-X_w||^2_2 = (X^TX)^{-1}X^Ty$$
+$$\hat{w}_{ls} = argmin_w \vert \vert y-X_w\vert \vert ^2_2 = (X^TX)^{-1}X^Ty$$
 
 The sum of each individual term is what we wish to minimize(i.i.d.) in MLE. 
 
-$\log p(y_i\|x_i,w) = log \frac{1}{\sqrt(2 \pi \sigma_n^2)} \exp(-\frac{1}{2 \sigma^2_n} (y_i - w^T x_i)^2)$ 
+$\log p(y_i\vert x_i,w) = log \frac{1}{\sqrt(2 \pi \sigma_n^2)} \exp(-\frac{1}{2 \sigma^2_n} (y_i - w^T x_i)^2)$ 
 
 Problem(2.2): Prove the variance for the noise term is: $\sigma_n^2 = \frac{1}{n} \Sigma_i (y_i-w^Tx_i)^2$
 
@@ -108,10 +109,10 @@ $$\log p = -\frac{n}{2} \log(2\pi \sigma_n^2) - \frac{1}{2\sigma_n^2} \Sigma_i(y
 
 $$
 \begin{aligned}
-&\log p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} [\sigma_p^{-2} ||w||^2_2 + \sigma_n^{-2} \textcolor{red}{||y-Xw||^2_2}] \\
-&\to \textcolor{red}{||y-Xw||^2_2} =  w^TX^TXw + 2y^TXw + \textcolor{grey}{y^Ty} \\
-&\to \log p(w | x_{1:n}, y_{1:n}) = -\frac{1}{2} w^T \Sigma^{-1} w + w^T \Sigma^{-1}\mu + \text{const} \\
-&\to w_{|x,y} \sim N(\mu, \Sigma) \\ 
+&\log p(w \vert  x_{1:n}, y_{1:n}) = -\frac{1}{2} [\sigma_p^{-2} \vert \vert w\vert \vert ^2_2 + \sigma_n^{-2} \textcolor{red}{\vert \vert y-Xw\vert \vert ^2_2}] \\
+&\to \textcolor{red}{\vert \vert y-Xw\vert \vert ^2_2} =  w^TX^TXw + 2y^TXw + \textcolor{grey}{y^Ty} \\
+&\to \log p(w \vert  x_{1:n}, y_{1:n}) = -\frac{1}{2} w^T \Sigma^{-1} w + w^T \Sigma^{-1}\mu + \text{const} \\
+&\to w_{\vert x,y} \sim N(\mu, \Sigma) \\ 
 &\mu = \sigma_n^{-2} \Sigma X^Ty \\
 &\Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^{-1}
 \end{aligned}
@@ -119,11 +120,11 @@ $$
 
 We go back to deriving the ridge loss(and the $\lambda$ term): 
 
-$$\hat{w}_{ridge} = argmin_w ||y-X_w||^2_2 + \lambda ||w||^2_2 = (X^TX + \lambda I)^{-1} X^T y$$
+$$\hat{w}_{ridge} = argmin_w \vert \vert y-X_w\vert \vert ^2_2 + \lambda \vert \vert w\vert \vert ^2_2 = (X^TX + \lambda I)^{-1} X^T y$$
 
-$$\hat{w}_{MAP} = argmax -\frac{1}{2} \sigma_p^{-2} ||w|| + \sigma_n^{-2} ||y-Xw||+const \\ = argmin ||y-Xw|| + \frac{\sigma_n^2}{\sigma_p^2}$$
+$$\hat{w}_{MAP} = argmax -\frac{1}{2} \sigma_p^{-2} \vert \vert w\vert \vert  + \sigma_n^{-2} \vert \vert y-Xw\vert \vert +const \\ = argmin \vert \vert y-Xw\vert \vert  + \frac{\sigma_n^2}{\sigma_p^2}$$
 
-*We would skip Lasso(Example 2.2)*: If we would assume a Lasso prior $w\sim Laplace(0,h)$, we'll acquire a Lasso term instead of ridge term: $\frac{\sigma_n^2}{h}\|\|w\|\|^1_1$.
+*We would skip Lasso(Example 2.2)*: If we would assume a Lasso prior $w\sim Laplace(0,h)$, we'll acquire a Lasso term instead of ridge term: $\frac{\sigma_n^2}{h}\vert \vert w\vert \vert ^1_1$.
 
 Recall the expanded loss: $\frac{1}{2} w^T A w - b^Tw$ where $A = \sigma_n^{-2}X^TX + \sigma_p^{-2}I; b = \sigma_n^{-2}X^Ty$ 
 
@@ -135,18 +136,18 @@ $$\Delta_w L = Aw-b = 0 \to Aw = b \\ [X^TX + \frac{\sigma_n^2}{\sigma_p^2}I]w =
 
 The book has also mentioned that instead of using a point estimate of the weight, we can use the full posterior of the weight to acquire a distribution of possible target values, instead of the best estimated target value. 
 
-$$f^* | x^*, x_{1:n}, y_{1:n} \sim N(\mu^T x^*, x^{*T} \Sigma x^*) \\
-y^*| x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*, x^{*T} \Sigma x^*+\sigma_n^2)$$
+$$f^* \vert  x^*, x_{1:n}, y_{1:n} \sim N(\mu^T x^*, x^{*T} \Sigma x^*) \\
+y^*\vert  x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*, x^{*T} \Sigma x^*+\sigma_n^2)$$
 
 $f^*$ is the **actual distribution or BLR prediction**, however, $y^*$ is the **predicted label**, taking account of the the data generation noise(gaussian noise). I want to help with this distinction:
 
 $$
-p(f^*|x^*,x_{1:n},y_{1:n}) = \int p(f^*|w,x^*) p(w|x_{1:n},y_{1:n}) dw\\
+p(f^*\vert x^*,x_{1:n},y_{1:n}) = \int p(f^*\vert w,x^*) p(w\vert x_{1:n},y_{1:n}) dw\\
 
-p(y^*|x^*,x_{1:n},y_{1:n}) = \int p(y^*|f*) p(f^*|x^*,x_{1:n},y_{1:n}) dw
+p(y^*\vert x^*,x_{1:n},y_{1:n}) = \int p(y^*\vert f*) p(f^*\vert x^*,x_{1:n},y_{1:n}) dw
 $$
 
-where $p(y^*\|f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
+where $p(y^*\vert f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
 
 This would allow us to have a **varying distribution over the feature space**: more certain when there are more observed data around the test point, less certain when there are less. The book didn't go into a lot of detail and I wish to show this feature. 
 
@@ -154,14 +155,14 @@ First we recall that w's posterior distribution is Gaussian.  This is not entire
 
 $$
 \begin{aligned}
-&w_{|x,y} \sim N(\mu_N, \Sigma_N) \\
+&w_{\vert x,y} \sim N(\mu_N, \Sigma_N) \\
 &\mu_N = \Sigma_N (\Sigma_0^{-1}\mu_0 + \sigma_n^{-2}X^Ty)\\
 &\Sigma_N = (\Sigma_0^{-1} + \sigma_n^{-2}X^TX)^{-1}
 \end{aligned}
 $$
 
 <!-- 
-$$w_{|x,y} \sim N(\mu, \Sigma) \\ 
+$$w_{\vert x,y} \sim N(\mu, \Sigma) \\ 
 \mu = \sigma_n^{-2} \Sigma X^Ty; \\
 \Sigma = [\sigma_n^{-2}X^TX+\sigma_p^{-2}I]^{-1}$$ 
 -->
@@ -179,13 +180,13 @@ Aleatoric and Epistemic Uncertainty is different from bias-variance tradeoff fro
 Aleatoric and Epistemic Uncertainty are caused by different things. 
 
 Recall from BLR: 
-$$y^*| x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*,\textcolor{blue}{\sigma_n^2}+\textcolor{red}{x^{*T} \Sigma x^*})$$
+$$y^*\vert  x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*,\textcolor{blue}{\sigma_n^2}+\textcolor{red}{x^{*T} \Sigma x^*})$$
 
 The blue part(the data generation noise term) is aleatoric uncertainty, or uncertainty caused by labels. The blue part(previously the variance for BLR prediction) is epistemic uncertainty due to lack of data(it grows larger when there are less data);. 
 
 Let's rewrite the two term of the variance as the book did(2.18) so that we can expand the idea to models other than LR: 
 
-$$Var(y^*|x^*) = \textcolor{blue}{E_\theta[Var_{y^*}[y^*|x^*,\theta]}+\textcolor{red}{Var_{\theta}[E_{y^*}[y^*|x^*,\theta]]}$$
+$$Var(y^*\vert x^*) = \textcolor{blue}{E_\theta[Var_{y^*}[y^*\vert x^*,\theta]}+\textcolor{red}{Var_{\theta}[E_{y^*}[y^*\vert x^*,\theta]]}$$
 
 I quote the book(with some modification): "Aleatoric uncertainty is expected variance of $y^*$ across all models, and Epistemic uncertainty is the expected variance of mean prediction under each model. "
 
@@ -195,7 +196,7 @@ I quote the book(with some modification): "Aleatoric uncertainty is expected var
 
 Most of the times our observed feature, $x$ , and target is not linear, but they might be linear in some feature space, $\phi(x)$. We would transform the linear regression into: $f=\phi w$, $w \sim N(0,\sigma_p^2 I)$. We would acquire this prior about the function given input: 
 
-$$f| X \sim N(0,\sigma_p^2 \phi \phi^T)$$
+$$f\vert  X \sim N(0,\sigma_p^2 \phi \phi^T)$$
 
 It can be, however, costly to figure out a best set of feature and compute the feature vector for each entry during training. 
 
@@ -244,7 +245,7 @@ $n\times e$ design matrix/training dataset, and the vecotr for unobserved data p
 
 >(joint) kernel matrix for training and testing**: $\hat{K} = \sigma_p^2 \hat{\Phi} \hat{\Phi}^T$
 
->Prior adding data genereation noise: $\hat{y}\|X,x^* \sim N(0,\hat{K}+\sigma_n^2 I)$
+>Prior adding data genereation noise: $\hat{y}\vert X,x^* \sim N(0,\hat{K}+\sigma_n^2 I)$
 
 **Problems to be addressed:**
 
@@ -266,13 +267,13 @@ We'll come back to it.
 
 Start with $p(x_0)$. 
 
-For each iteration, we have $p(x_t\|y_{1:t-1})$ and observe the new $y_t$. 
+For each iteration, we have $p(x_t\vert y_{1:t-1})$ and observe the new $y_t$. 
 
-- Conditioning step(*3.8*): compute $p(x_t\|y_{1:t}) = p(x_1)p(y_1\|x_1) \Pi^t_{i=2}p(x_i\|x_{i-1})p(y_i\|x_i)$
+- Conditioning step(*3.8*): compute $p(x_t\vert y_{1:t}) = p(x_1)p(y_1\vert x_1) \Pi^t_{i=2}p(x_i\vert x_{i-1})p(y_i\vert x_i)$
 
-- Prediction step(*3.9*): $p(x_{t+1}\|y_{1:t}) = \int p(x_{t+1}\| x_t)p(x_t\|y_{1:t})dx_t$
+- Prediction step(*3.9*): $p(x_{t+1}\vert y_{1:t}) = \int p(x_{t+1}\vert  x_t)p(x_t\vert y_{1:t})dx_t$
 
-*Bayesian Smoothing* is a relevant concept about computing the hidden state in the past: it estimates $X_k\|y_{1:t} \forall k < t$ 
+*Bayesian Smoothing* is a relevant concept about computing the hidden state in the past: it estimates $X_k\vert y_{1:t} \forall k < t$ 
 
 Also, most Bayesian filters assume *conditional independence*($X_t$ is only dependent on $X_{t-1}$, the previous state, like Markov chain).
 
@@ -289,7 +290,7 @@ $$\begin{aligned}
 *Conditioning(Kalman Update, 3.2.1)*
 
 $$\begin{aligned}
-&X_{t+1}\|Y_{1:t+1} \sim N(\mu_{t+1}. \Sigma_{t+1})\\
+&X_{t+1}\vert Y_{1:t+1} \sim N(\mu_{t+1}. \Sigma_{t+1})\\
 &\mu_{t+1} = F\mu_t+\textcolor{red}{K_{t+1}}(y_{t+1}-HF\mu_t) \\
 &\Sigma_{t+1} = (I-\textcolor{red}{K_{t+1}}H)(F\Sigma_tF^T+\Sigma_x)
 \end{aligned}$$
@@ -305,8 +306,8 @@ $K_{t+1}$: Kalman gain(relevance of new observation to the prediction). $K_{t+1}
 $$\begin{aligned}
 \mu_{t+1} = F\mu_t \\
 \Sigma_t = F\Sigma_tF^T+\Sigma_x \\
- = E[(X_{t+1}-\hat\mu_{t+1})(X_{t+1}-\hat\mu_{t+1})^T\|y_{1:t}] \\
- = FE[(x_t-\mu_t)(x_t-\mu_t)^T\|y_{1:t}]+E[\epsilon_t\epsilon_t^T]
+ = E[(X_{t+1}-\hat\mu_{t+1})(X_{t+1}-\hat\mu_{t+1})^T\vert y_{1:t}] \\
+ = FE[(x_t-\mu_t)(x_t-\mu_t)^T\vert y_{1:t}]+E[\epsilon_t\epsilon_t^T]
 \end{aligned}$$
 
 
@@ -334,7 +335,7 @@ $$\begin{aligned}
 
 The distribution at a new given point $x^*$ can be written(with a defined mean and covariance function), you can see the aleatoric and epistemic terms in the variance: 
 
-$$y^*\|x^* \sim N(\mu(x^*), k(x^*, x^*)+\sigma^2_n)$$
+$$y^*\vert x^* \sim N(\mu(x^*), k(x^*, x^*)+\sigma^2_n)$$
 
 *I am not 100% sure if this is a prior or predictive posterior. I lean to the idea that it is a prior because it is not conditioned on training data. Futhermore, the book will later obtain a posterior with $\mu'(.)$ and $k'(.,.)$.*
 
@@ -345,7 +346,7 @@ The previously referenced fig 4.1 depicted a predictive posterior for sure. Howe
 The joint distribution between observations(training) and Noise-free prediction: 
 
 $$\begin{aligned}
-& \begin{bmatrix}y \\ f^* \end{bmatrix} | x^*,X  \sim N(\hat\mu, \hat K) \\
+& \begin{bmatrix}y \\ f^* \end{bmatrix} \vert  x^*,X  \sim N(\hat\mu, \hat K) \\
 & \hat K = \begin{bmatrix} K_AA & k_{x^*, A}\\k^T_{x^*, A} & k(x^*,x^*)\end{bmatrix}; k(x,A) = \begin{bmatrix} k(x,x_1)\\... \end{bmatrix}
 \end{aligned}$$
 
@@ -354,8 +355,8 @@ As you may recall from kernelized BLR, we just need to calculate $k(x^*, A)$ (th
 From the joint distribution, we can derive the predictive posterior(the conditional distribution), which is also the predictive posterior of kernelized BLR:
 
 $$\begin{aligned}
-&f|x_{1:n},y_{1:n} \sim GP(\mu', k') \\
-&\to f^*|x^*,x_{1:n},y_{1:n} \sim N(\mu'(x^*),k'(x^*,x^*))\\
+&f\vert x_{1:n},y_{1:n} \sim GP(\mu', k') \\
+&\to f^*\vert x^*,x_{1:n},y_{1:n} \sim N(\mu'(x^*),k'(x^*,x^*))\\
 &\quad \mu'(x) = \mu(x)+k^T_{x,A}\textcolor{red}{(K_{AA}+\sigma^2_nI)^{-1}}(y_A-\mu_A)\\
 &\quad k'(x,x') = k(x,x') - k^T_{x,A}(K_{AA}+\sigma^2_nI)^{-1}k_{x',A}
 \end{aligned}$$
@@ -364,9 +365,9 @@ Book's derivation utilized 1.53(*1.2.3* pp21), in our case, A is the distributio
 
 $$\begin{aligned}
 &X_A \sim N(\mu_A,\Sigma_A);  \\
-& \to X_A|X_B = x_B \sim N(\mu_{A\|B}, \Sigma_{A\|B})\\
-& \quad \mu_{A|B} = \mu_A + \Sigma_{AB}\Sigma^{-1}_{BB}(x_B-\mu_B)\\
-& \quad \Sigma_{A|B} = \Sigma_{AA} - \Sigma_{AB}\Sigma^{-1}_{BB}\Sigma_{BA}
+& \to X_A\vert X_B = x_B \sim N(\mu_{A\vert B}, \Sigma_{A\vert B})\\
+& \quad \mu_{A\vert B} = \mu_A + \Sigma_{AB}\Sigma^{-1}_{BB}(x_B-\mu_B)\\
+& \quad \Sigma_{A\vert B} = \Sigma_{AA} - \Sigma_{AB}\Sigma^{-1}_{BB}\Sigma_{BA}
 \end{aligned}$$
 
 I'll explain briefly about the colored part: $\Sigma_{BB}$ is the prior with the data noise(it showed up before in our notes). My idea is that although the generation noise/error has been observed for the training set, it still can add to the uncertainty about the uunobserved underlying distribution.(?)
@@ -407,13 +408,13 @@ You might be able to define a kernel with a transformation $\phi$ up to some pow
 
 - *Gaussian(RBF)*
 
-$k(x,x'; h) = exp(-\frac{\|\|x-x'\|\|^2_2}{2h^2})$
+$k(x,x'; h) = exp(-\frac{\vert \vert x-x'\vert \vert ^2_2}{2h^2})$
 
 $h$ would control the smoothness(larger -> smoother). Gaussian kernel is equivalent to infinitely dimensional feature space. It's an exercise in the book, however we'll not prove it here. 
 
 - *Laplace(Exponential)*
 
-$k(x,x'; h) = exp(-\frac{\|\|x-x'\|\|_2}{h})$
+$k(x,x'; h) = exp(-\frac{\vert \vert x-x'\vert \vert _2}{h})$
 
 Laplace kernel are non-smooth. 
 
@@ -423,7 +424,7 @@ Book discussed how to combine/map existing kernels to create new kernels(*4.3.2*
 
 - stationary: kernel depends on relative locations of pts. $k(x,x') = \hat(k)(x - x')$
 
-- isotropic: kernel depends only on distance of pts. $k(x,x') = \hat(k)(\|\|x - x'\|\|)$
+- isotropic: kernel depends only on distance of pts. $k(x,x') = \hat(k)(\vert \vert x - x'\vert \vert )$
 
 *RBF is isotropic(and thus also stationary), EXP is only stationary. Linear kernel is neither.* 
 
@@ -451,11 +452,13 @@ Instead of full posterior, we might obtain samples in these two ways(both $O(n^3
 
 - Affine trasnformation: $f = K^{1/2}\epsilon+ \mu$ (Square Root)
 
-- Forward Sampling: $f_n \sim p(f_n\|f_{1,...,n-1})$ (Matrix Inverse in previous posterior)
+- Forward Sampling: $f_n \sim p(f_n\vert f_{1,...,n-1})$ (Matrix Inverse in previous posterior)
 
 <!-- Here, need to dig more -->
 
 **Reproducing Kenel Hilbert Space(RKHS)**
+
+RKHS discribes a set of functions a kernel can represent. 
 
 *RKHS for a kernel $k:X\times X\to R$:* $H_k(X) = \{f(.) = \Sigma_i \alpha_i k(x_i, .)\}$
 
@@ -463,7 +466,7 @@ $$\forall x\in X \to k(x,.) \in H_k(X)$$
 
 *Inner product of two function within the same RKHS(f,g are two RKHS):* $<f,g>_{k} = \Sigma_i \Sigma_j \alpha_i \alpha'_j k(x_i, x'_j)$; 
 
-*Norm of a function measures the smoothness/complexity of f:* $\|\|f\|\|_k = \sqrt{<f,f>_k}$
+*Norm of a function measures the smoothness/complexity of f:* $\vert \vert f \vert \vert_k = \sqrt{<f,f>_k}$
 
 *Reproducing Property*
 
@@ -472,7 +475,7 @@ $$\forall x\in X, f\in H_k(X), \to f(x) = <f(.),k(x,.)>_k$$
 **Representer Theorem**
 
 $$\begin{aligned}
-&\hat f = argmin_{f\in H_k(x)} L(f(x_1)...f(x_n)) + \lambda ||f|| \\ 
+&\hat f = argmin_{f\in H_k(x)} L(f(x_1)...f(x_n)) + \lambda \vert \vert f\vert \vert  \\ 
 &\to \hat f(x) = \hat\alpha^T k_{x,x_i} = \Sigma_i \hat\alpha_i k(x,x_i)
 \end{aligned}$$
 

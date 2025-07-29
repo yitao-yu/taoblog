@@ -77,17 +77,48 @@ We choose the $\beta$ sequence so that it leads to *well-calibrated confidence i
 
 (eq 9.7) With $P>1-\delta$, the ground truth function are bounded on all time step: 
 
-$$\forall t \geq 1, \forall x \in X: f^*(x) \in C_t(x) = \mu_{t-1}(x) \pm \beta_t(\delta) \sigma+{t-1}(x)$$
+$$\forall t \geq 1, \forall x \in X: f^*(x) \in C_t(x) = \mu_{t-1}(x) \pm \beta_t(\delta) \sigma_{t-1}(x)$$
 
 With this criteria, we can derive a beta sequence under two different settings. 
 
-**Bayesian Setting** means that we have a prior $f^* \sim GP(\mu_0, k_0)$
+**Bayesian Setting** means that we have a prior $f^* \sim GP(\mu_0, k_0)$ (*Theorem 9.4, Problem 9.2, Srinivas et al. 2010 A.2, Lemma 5.1, 5.5*)
 
-*More here*
+The bound is derived from the tail probability of $N(0,1)$: 
 
-**Freqeuntist Setting** means that we assume no prior about $f^*$. 
+$$Pr(r>c) = \frac{1}{2\pi}\int^\infty_c e^{-\frac{u^2}{2}}du$$
 
-*More here*
+Note $r = \frac{f^*(x)-\mu_{t-1}(x)}{\sigma_{t-1}}>c$ is an event about $f^*$ interval's *upper bound* and thus $c > 0$(positive z-score for upper bound of GP). We define $z = u - c \to u = z+c$ to map the integral range to $(0, \infty)$. 
+
+$$\begin{aligned}
+& Pr(r>c) = \frac{1}{2\pi}\int^\infty_0 e^{-\frac{(z+c)^2}{2}} dz\\
+& = \frac{1}{2\pi} \int^\infty_0 e^{-\frac{z^2}{2}}e^{-zc}e^{-\frac{c^2}{2}} dz \\
+& = \frac{1}{2\pi} e^{-\frac{c^2}{2}} \int^\infty_0 e^{-\frac{z^2}{2}}e^{-zc} dz \\
+& \leq \frac{1}{2\pi} e^{-\frac{c^2}{2}} \int^\infty_0 e^{-\frac{z^2}{2}} (1) dz\\
+& = e^{-\frac{c^2}{2}}Pr(r>0) \leq e^{-\frac{c^2}{2}}
+\end{aligned}$$
+
+$$z \geq 0; c > 0 \to e^{-zc} < 1$$
+
+For convenience(in math), we are interested in the event $r > \sqrt{\beta_t}$. 
+
+$$\begin{aligned}
+& Pr(\vert r \vert > \sqrt{\beta_t}) \leq e^{-\frac{\beta_t}{2}}\\
+& \to Pr(\vert r \vert < \sqrt{\beta_t}) \geq 1-  e^{-\frac{\beta_t}{2}}
+\end{aligned}$$
+
+We define $\beta_t = - 2 \log(\delta/ \pi_t)$, and acquire $\Pi Pr(\vert \frac{f^*(x)-\mu_{t-1}(x)}{\sigma_{t-1}} \vert < \beta_t) \geq 1 - \frac{\delta}{\pi_t}$
+
+$\pi_t$ is defined such that its inverse sums to one across all steps, and we use union bound to assume a lower bound for success: 
+
+$Pr(\forall t, \vert \frac{f^*(x)-\mu_{t-1}(x)}{\sigma_{t-1}} \vert < \beta_t) \geq 1-\Sigma_t \frac{\delta}{\pi_t} = 1 - \delta$
+
+The bound is not $\Pi_t (1-\frac{\delta}{\pi_t})$ because we *do not* assume independence. Union bounds means that we assume disjoint event and always overestimates the probability for an event(in our case, failure to bound). 
+
+*This would, with further proofs, give us sublinear regret in theorem 9.3.*
+
+**Freqeuntist Setting** means that we assume no prior about $f^*$. Rahter, we assume $f^* \in H_k(X)$ or $\vert \vert f^*\vert \vert_k < \infty$, recall the RKHS and function's norm in RKHS. (This can be shown to be contradictory to the bayesian assumption, according to the book. )
+
+*I would not pursue proofs for the frequentist setting unless I have more time, but a rough skim through Chowdhury and Gopalan 2017 shows that the norm of the error sequence $\epsilon_{1:t}$ is bounded.*
 
 ## Improvement: PI, EI
 
