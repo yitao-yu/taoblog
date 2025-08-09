@@ -228,3 +228,304 @@ A new concept(Entropy Regularization, the weighted standard deviation) is intero
 
 # Markov Decision Process
 
+Markov Decision Process is about probabislitic planning, featuring agents playing (making sequential actions) in a *known* stochastic environment. 
+
+- states: $X = \{x_1 ... x_n\}$
+
+- actions: $A = \{a_1 ... a_m\}$
+
+- transition probabiltiy: $p(x'\vert x, a)$
+
+- reward: $r: X\times A \to R$
+
+$$R_t = r(X_t, A_t)$$
+
+**Policy** assigns a probability to each action under a specific state. $\pi(a \vert x) = P(A_t = a \vert X_t = x)$
+
+*I just wish to note here that this abstraction also extends to multi-player games. The agent would see the the actions of other players changing the state/environment as a response to their action. Be the policy of other players deterministic or probabilistic.*
+
+*Also, to avoid confusion: in game theory, there is this notion of mixed-strategy Nash Equilibrium(basically probabilistic policy for some players). However, our book states that for fully observable environments, the agent always has an optimal deterministic policy. This is, however, not contradictory. In game theory, games are played for infinite rounds and every players are allowed to change their policy between rounds. However, here in MDP, (1) a game is played one time (2) a "fully observable environment" means that before each game, the agent is aware of the transition probability and the starting state. An expected reward can be calculated for every actions and thus some option must be optimal.*
+
+```
+Consider this enforcer-offender game: offender can break the rule(+10 reward, -100 if caught) or obey(-5 reward), enforcer can patrol(-50 reward, +100 if catching anyone) or stay in office(0 reward).
+
+A game theory view is interested in finding the mixed-startegy equilibrium and allows the enforcer and offender to change there strategy before each iterations until no more increase in utility. As you can see, there is no pure/detereministic strategy equilibrium in this game, because if one side deploy a pure strategy the other side can always alter their pure strategy in a profitable way. For example, it's always profitable for enforcer to switch to "patrol" from "rest" when enforcer chooses "offend" consistently, and vice versa. 
+
+A MDP agent playing the offender would know the strategy of the officer(say 10% chance of patroling) and calculate rewards, determining that "breaking the rule" would be a fixed optimal policy.
+```
+
+$E r_b = -100*0.1+0.9*10=-1 > E r_f = -5$
+
+A fixed policy implies that the process can be described by a Markov chain(no tree-like structure). 
+
+**Discounted Playoff** is a score written from infinite reward. 
+
+$$G_t = \Sigma^{\infty}_{m=0} \gamma^m R_{t+m} ;  0 \leq \gamma < 1$$
+
+**State-Action Value Function(Q-function)** measures the average discounted playoff given $t, a, x$. 
+
+$$q^\pi_t(x,a) = E_\pi [G_t\vert x, a] = r(x,a) + \gamma \Sigma_{x'} p(x' \vert x, a) v^{\pi}_{t+1}(x')$$
+
+$v^{\pi}_t(x) = E_{\pi} [G_t \vert x]$ is **State Value Function**. Under our current assumption(stationary dynamics, rewards and policy), both are independent from $t$. 
+
+## Bellman Expectation Equation
+
+Bellman Expectation Equation reveals the recursive nature of state-action value functions (q functions) and state value functions(v functions). 
+
+$$\begin{aligned}
+& v^\pi(x) = E_\pi [G_0 \vert X_0 = x] \\
+& = E_\pi [\Sigma_m \gamma^m R_m \vert X_0 = x] \\
+& = E_\pi[R_0 \vert X_0 = x] + \gamma E_\pi [\Sigma_m \gamma^m R_{m+1} \vert X_0 = x] \\
+& = r(x, \pi(x)) + \gamma p(x'\vert x , \pi(x)) E_\pi [\Sigma_m \gamma^m R_m \vert X_0 = x'] \\
+& = r(x, \pi(x)) + \gamma \Sigma_{x'} p(x' \vert x, \pi(x)) v^\pi(x') \\
+& = r(x, \pi(x)) + \gamma E_{x\vert x', \pi(x)} [v^\pi(x')]
+
+\end{aligned}$$
+
+*Think of evaluating the stochastic policies as traversing trees and evaluating the deterministic policies as walking down one branch of the tree*
+
+For stochastic policies: 
+
+1. The value function can be shown to be the expectation of the q function.
+
+$$\begin{aligned}
+& v^{\pi}(x) = \Sigma_a \pi(a\vert x) (r(x'\vert x, a)v^\pi(x')) \\
+& = E_{a\sim \pi(x)}[q^\pi(x,a)]
+\end{aligned}$$
+
+2. Thus, the q function is recursive(since it's defined by a state-value function). 
+
+$$\begin{aligned}
+& q^{\pi}(x, a) = r(x,a) + \gamma \Sigma_{x'} p(x'\vert x, a) \Sigma_{a'} \pi(a' \vert x') q^\pi(x', a') \\
+& = r(x, a) + \gamma E_{x'\vert x,a} E_{a' \sim \pi(x)}[q^\pi(x', a')]
+\end{aligned}$$
+
+At this point I would argue that deterministic policies simply are stochastic policies with a 100% possibility assigned to the optimal action(under a given state). However, we can also appreciate a more simple notation as the book listed: 
+
+$$v^{\pi}(x) = q^{\pi}(x,\pi(x))$$
+
+## Policy Evaluation
+
+This section focus on computing the $v^\pi$ for a given policy. 
+
+The Bellman Equation in vector/matrix form(for n possible states):
+
+$$\boldsymbol{v^\pi} = \boldsymbol{r^\pi} + \gamma \boldsymbol{P^\pi} \boldsymbol{v^\pi}$$
+$$\boldsymbol{v^\pi} = (I - \gamma \boldsymbol{P^\pi})^{-1}\boldsymbol{r^\pi}$$
+
+However, this involves matrix inverse $(O(N^3))$ and thus costly. 
+
+We can approximate by **Fixed Point Iteration**
+
+*Fixed Point Iteration is about rewriting equations to $x=f(x)$, and solve by starting from a $x_0$ and iteratively updating $x_{t+1} = f(x_t)$ until convergence.*
+
+For example(from gemini), we can solve $x^2 - x - 1 = 0$ by iterative updating $x_{t+1} = \sqrt{x_t+1}$.
+
+In our problem, we wish to write some $v = Bv$, where B is affine transformation(linear transformation + translation), so we can apply this method. We have already done that.  
+
+$$v^\pi\leftarrow B^\pi\boldsymbol{v^\pi} = \boldsymbol{r^\pi} + \gamma \boldsymbol{P^\pi} \boldsymbol{v^\pi}$$
+
+We need to prove that the solution $v^\pi$ is a unique fixed-point of $B^\pi$(only one solution) to use this iterative method. Note, this is a looser requirement than the problem is convex. 
+
+Because we can write $x = f(x)$, that means that it's a fixed point and it'll eventually converge(for defined transformation $f$, there exists some $x$ that its value won't change after the transformation). 
+
+We just need to show that for our problem $v^\pi$ is unique via showing the transformation $B$ is a contraction: by applying the transformation, the distance to any fixed points shrinks(and thus converges to 0, and this is not possible for multiple fixed points). 
+
+**Proof of Contraction**
+
+$$\begin{aligned}
+& \vert \vert B^\pi v - B^\pi v' \vert \vert_{\infty} = \gamma \vert \vert P^\pi(v-v') \vert \vert_{\infty}\\
+& \leq \gamma \max_x \Sigma_x' p(x'\vert x, \pi(x))\vert v(x) -v(x')\vert\\
+& \leq \gamma \vert \vert v-v' \vert \vert_{\infty} \quad 0<\gamma < 1
+\end{aligned}$$
+
+*You might have already noticed that in our previous example, $x^2 - x -1 = 0$ has two solutions. And $x = \sqrt{x+1}$ would only select the positive one. Another formulation, $x = x^2 -1$ would not converge to either in iterative setting since it is not a contraction. For selecting the nagative roots: $x = \frac{1}{x+1}$ with a proper $x$. This is a local contraction(thus doesn't garuantee convergence, however, only converges to the negative root if any).*
+
+We can, by induction, show that the convergence is exponentially fast. 
+
+$$\vert \vert v_t^\pi - v^\pi \vert \vert_\infty \leq \gamma \vert \vert v_{t-1}^\pi - v^\pi \vert \vert_\infty =  \gamma^t  \vert \vert v_{0}^\pi - v^\pi \vert \vert_\infty $$
+
+## Policy Optimization
+
+We return to our goal of finding the optimal policy, $\pi$.  A policy is superior if it has a higher state value.
+
+$$v^*(x) = max_\pi v^\pi(x); \quad q^*(x,a) = max_\pi q^\pi(x,a)$$
+
+**From Greedy Policy to Bellman Optimality Equation**(*10.3.1*, *10.3.2*)
+
+Note the greedy policy here is not about maximizing one step reward, but the long term value of an action(thus q or v value). 
+
+$$\pi_q(x) = argmax_a q(x,a)$$
+
+$$\pi_v(x) = argmax_a r(x,a) + \gamma \Sigma_{x'} p(x' \vert x,a) v(x')$$
+
+We should be reminded that q and v functions are dependent on a specific policy. When we shift to a new policy, we have new q and v functions as well. 
+
+It is intuitive that this optimization problem is an iterative process(fixed point iteration). There are two view of this optimization problem: 
+
+- Policy Iteration: $\pi^*$ is the fixed point of the dependency between the greedy policy and the value function. This stress that: *The optimal policy is the one which maximize itself's q and v function(and thus $q^*$ abd $v^*$)*.
+
+$$\pi^*(x) = argmax_a q^*(x,a)$$
+
+- Value Iteration: $v^*$ is the fixed point of *Bellman Update* This stress that: *The value of the state under an optimal policy must be the expected return of the best action*.
+
+$$v^*(x) = \max_a q^*(x,a) = \max_a r(x,a) + \gamma E_{x'\vert x,a}[v^*(x)]$$
+
+$$q^*(x,a) = r(x,a) + \gamma E_{x'\vert x,a}[\max_{a'} q^*(x',a')]$$
+
+Both perspectives should reach the same result(the optima), but with tradeoffs in other aspects.
+
+**Policy Iteration** (*10.3.3*)
+
+Consult the *Algorithm 10.14* for pesudo-code. Essentially, we start from a policy $\pi_0$ and iteratively compute the v-function $v^{\pi_t}$ and the optimal policy under the v-function $\pi_{t+1} \leftarrow \pi_v$.
+
+Here, note that the book use two different notation for iteration steps: t for policy iteration(the outer loop) and T($\tau$) for policy evaluation(the inner loop). 
+
+$$v_0 = v^{\pi_t}; \lim_{T\to \infty} v_T = v^{\pi_{t+1}}$$
+
+We want to prove the convergence for this algorithm:
+
+-  We know that we are working on deterministic polcies and we have one optimal solution(see beginning of the chapter)
+
+- We wish to show proof of improvement(essentially the same as what we did last section to show that the affine transformation was a contraction). Monotonic Improvement implies that: (1) for all states, the resulting value is not worse; (2) And for at least some states, the resulting value is better.  
+
+- For the policy evaluation step, we have already shown the v-function converges to the correct evaluation of a specified policy. We wish to plug in the definition of policy update and show(via induction) that the on every step, the evaluation of the new policy has a higher state value(v-value). And thus the new policy achieves a better state value than the starting policy. 
+
+- If that is proved, it is evident for outer loop: the resulting policy of the new iteration is "superior" than the policy from previous iteration (except for cases where both are optima). (Monotonic Improvement)
+
+$$v^{\pi_{t+1}} \geq v^{\pi_T}$$
+
+*Proof of Improvement*
+
+Base Case: 
+
+$$v_1 = (Bv^{\pi_t})(x) = \max_a q^{\pi_t}(x,a) \geq q^{\pi_t}(x,a) = v^{\pi_t}(x) = v_0$$
+
+Inductive step
+
+$$\begin{aligned}
+& v_{T+1}(x) = r(x, \pi_{t+1}(x)) + \gamma \Sigma_{x'} p(x' \vert x, \pi_{t+1}(x)) v_{T}(x')\\
+& \geq r(x, \pi_{t+1}(x)) + \gamma \Sigma_{x'} p(x' \vert x, \pi_{t+1}(x)) v_{T-1}(x')\\
+& = v_T(x)\\
+\end{aligned}$$
+
+Result: 
+
+$$v^{\pi_{t+1}} = \lim_{T\to \infty} v_T \geq v_0 = v^{\pi_t}$$
+
+$$v^{\pi_{t+1}} = v^{\pi_t} \space iff \space v^{\pi_{t+1}}  = v^{\pi_t} = v^*$$
+
+<!-- the proof uses the old policy's value function  to define and justify the one-step improvement of the new policy, and then uses the new policy's Bellman operator to show that this improvement holds throughout the entire policy evaluation process. -->
+
+**Value Iteration** (*10.3.4*)
+
+For value iteration, we would focus on approximating the expected return of each actions. And after we converges to the correct v-value, we finalize our policy by selecting the best actions. Consult *Algorithm 10.17* for pseudo-code: the initialized v-value would be the maximum of action rewards. 
+
+$$v(x) \leftarrow (B^*v)(x) = \max_a q(x,a)$$
+
+We use the same Bellman update as before(in policy iteration) and we wish to prove that it is a contraction and thus $v^*$ is a unique fixed point. 
+
+The book provides another view about the policy iteration: $v_t(x)$ is maximum expected reward when start from x and with a horizon t. This focus on the "reachable" states puts less computational effort in each iteration at the cost of not converging in finite steps. 
+
+*Proof of Convergence*
+
+$$\begin{aligned}
+& \vert \vert B^*v - B^* v' \vert \vert_\infty \\
+& = \max_x \vert B^*v(x) - B^* v'(x) \vert\\
+& = \max_x \vert \max_a q(x,a) - \max_a q'(x,a)\vert\\
+& \leq \max_x \max_a \vert q(x,a) - q'(x,a)\vert \\
+& \leq \gamma \max_x \max_a \Sigma_{x'} p(x'\vert x,a) \vert v(x')-v'(x')\vert\\
+& \leq \gamma \vert\vert v-v' \vert\vert_\infty
+\end{aligned}$$
+
+## Partial Observabable MDP (*10.4*)
+
+We extend to partial observable rewards(noisy rewards), similiar to the noisy observations in GP. (PO-MDP)
+
+Basically, we add observations $Y$ and observation probabilities: $o(y\vert x) = P(Y_t = y \vert X_t = x)$
+
+And we have to introduce belief about current state, conditioned on observations and past actions: $b_t(x) = P(X_t = x\vert y_{1:t}, a_{1:t-1})$
+
+PAI mentioned the Viterbi algorithm here, which we moved to the end of the note as the algorithm is not directly used. However, since both problems utilize an HMM setting. It might be helpful to read that part first. 
+
+**Belief Update In PO-MDP**
+
+Our primary goal here is not trying to recover a full hidden-state sequence(which Viterbi solves). Rather, we are trying to compute the current belief state.
+
+The belief state can be updated using Bayes Rule:
+
+$$\begin{aligned}
+& b_{t+1} (x) = \frac{1}{Z} P(y_{t+1}\vert X_{t+1} = x) P(X_{t+1}\vert \{y, a\}_{1:t})\\
+& = \frac{1}{Z} o(y_{t+1}\vert x) \Sigma_{x'} p(x\vert x', a_t) P(X_t = x'\vert \{y, a\}_{1:t})\\
+& = \frac{1}{Z} o(y_{t+1}\vert x) \Sigma_{x'}  p(x\vert x', a_t) b_t(x')
+\end{aligned}$$
+
+The update only needs: $y_{t+1}, a_t$. You can find it very similiar to the dynamic programming idea in Viterbi.  
+
+This update is deterministic: given the same action, observation and prior belief, we reach the same belief. 
+
+*Although "beliefs" describes the uncertainty about the partially observable states, we are certain about how we shoule update it.*
+
+**Belief State MDP**
+
+With belief and belief update, we want to transform the PO-MDP problem, so that we can use algorithms we 
+previously introduced in MDP. 
+
+For each PO-MDP, we can see our belief state as observable states for an MDP. The reward of an action would be the expected reward(because we are uncertain about our beliefs).  Belief state are defined as a distribution on a time step:
+
+$$B_t = X_t \vert y_{1:t},a_{1:t-1}$$
+$$B_t \in \textbf{B} = \Delta^X =\{b\in R^{\vert X \vert}:b\geq 0, \Sigma_i b(i) = 1\}$$
+
+Let us re-visit the components of MDP: a state, an action, a reward, and transition probability. Actions remains to be the same actions for PO-MDP, and state is now belief states. The reward would be the expected reward given our beliefs about the unexpected states. The transition probability can be defined using bayes rule as the transition probability between belief states given an action. 
+
+Note, the computation of the belief update and reward are both deterministic. We would thus define a Belief State MDP for PO-MDP(see PAI for full definition):
+
+*Reward*
+
+$$\rho( b,a) = E_{x\sim b} [r(x,a)] = \Sigma_x b(x)r(x,a)$$
+
+*Transition Probability*
+
+$$\tau(b'\vert b,a) = P(B_{t+1} = b' \vert B_t = b, A_t = a)$$
+
+$$\begin{aligned}
+& \tau(b_{t+1} \vert b_t, a_t) = P(b_{t+1}\vert b_t, a_t)\\
+& = \Sigma_{y_{t+1}} P(b_{t+1} \vert b_t, a_t, y_{t+1}) P(y_{t+1}\vert b_t, a_t) \\
+\\
+& P(b_{t+1} \vert b_t, a_t, y_{t+1}) = I_{b_{t+1} = b_{t+1}(x)} \\
+& P(y_{t+1}\vert b_t, a_t) = E_{x\sim b_t} [E_{x\vert x', a_t}[o(y_{t+1} \vert x')]] \\
+& = \Sigma_x b_t(x) \Sigma_{x'} p(x' \vert x, a_t) o(y_{t+1} \vert x')
+\end{aligned}$$
+
+We have shown that by we can map the PO-MDP problem to belief state MDP. 
+
+*Up til now, we have solved for MDP(and PO-MDP) porblems with known transition probability and rewards.*
+
+**Viterbi Algorithm to Solve HMM: A Side Quest (remark 10.21)**
+
+I have been exposed to Viterbi Decoding, HMMs, etc. in [statistical NLP(Gildea)](https://www.cs.rochester.edu/~gildea/2022_Fall/notes.pdf). As an addition to the PAI book, you can find the pseudocode for Viterbi in *Algorithm 1: Viterbi Decoding* of that link. Let me, however, draw analogy between our current PO-MDP problem and the POS tagging problem in the note, and try my best to document viterbi algorithm. 
+
+```
+Our previous problem, MDP, was a Markov Chain(a sequence of observable states with transitional probability)
+
+Hidden Markov Models(HMMs) introduces unobservable states(thus hidden states) and observations about the states at each time step. You can expect we know transitional probability between states and conditional probability between a state and an observation. The problem is to infer from the observations about the state sequence. 
+
+The POS tagging is such a problem where you put grammmer tags(hidden states) to each words(observations) in a sentence. The transitional probability would be, for example, it is more likely for an object tag than a subject tag to appear after a verb tag. The conditional probability is that the word "dog" is more likely to be used as a subject or object rather than a verb. 
+
+You can find these components for our PO-MDP problem. One thing is slightly different: the transitional probability is conditioned on a state and additionally an action(because an agent/policy is introduced!). 
+
+You will have a prior for the starting state in our problem, and in the POS tagging, you might start from a flat prior, where all states are equally possible, or a certain "start of speech/sentence" token. 
+
+The Viterbi Algorithm solve the HMM in tractable time by Dynamic Programming. Consider this data structure, we have a table(matrix) with each rows representing a probable states, and each columns represent a step in the sequence. The problem is thus transformed in to finding the most possible path within the table. (See the following figure)
+```
+![Science Direct Viterbi](https://ars.els-cdn.com/content/image/3-s2.0-B012227410500394X-gr14.gif)
+
+All nodes in the table is initialized to be $-\infty$, thus equally impossible. The possibility is measured by log-likelihood in the table. 
+
+For nodes in current layer(column), we would traverse through the node in the previous layer, and update the current node's log likelihood: $\max[\delta_{t,x}, \delta_{t-1,x}+tr_{x',x}]$
+
+This will assign every node inside the table their largest log-likelihood, and allowing us to retrieve a path with the largest log-likelihood value. 
+
+For decoding the sequence after registering the possibility of each nodes, we would start from the most probable node in the last layer and work our ways backward to retrieve nodes in the previous layers one by one. 
+
+*The Viterbi Algorithm is tractable because it stores the internal values for calculating log-likelihood for each possible sequences in a data structure. These values are heavily reused(dynamic programming).*

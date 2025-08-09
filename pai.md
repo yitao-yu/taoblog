@@ -24,7 +24,7 @@ Plan: We would skip Bayesian Neural Network for now and come back later, and at 
 - 01: [Warmup(Bayes Linear Regression, Kernel Trick, Gaussian Process)]({{site.url}}{{site.baseurl}}/pai/warmup-1); Chapter 1.4, 2,3,4 of PAI, Chapter 7 to be added in future
 - 02: [Active Learning]({{site.url}}{{site.baseurl}}/pai/active-learning-2); Chapter 8 of PAI
 - 03: [Bayesian Optimization(Bandits, etc.), Markov Decision Process(Policy Gradient, etc.)]({{site.url}}{{site.baseurl}}/pai/bayes-opt);Chapter 9, 10 of PAI
-- 04: []();Chapter 11 of PAI
+- 04:  [Tabular RL]({{site.url}}{{site.baseurl}}/pai/tabular-rl);Chapter 11 of PAI
 - 06: []();Chapter 12 of PAI
 - 07: []();Chapter 13 of PAI
 - Extension: To Be Decided
