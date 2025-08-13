@@ -7,7 +7,9 @@ group: pai
 
 ## Motivation and Thoughts
 
-Hi! I'm Yitao. This is a list of my notes while reading the book *"Probabilistic Aritificial Intelligence"* by Andreas Krause and Jonas Hübotter, which I'll refer to as PAI. It is [available on arxiv](https://arxiv.org/abs/2502.05244). I believe that there is also a [course website](https://las.inf.ethz.ch/teaching/pai-f24), where the book is used as a textbook. 
+Hi! I'm Yitao. This is a list of my notes while reading the book *"Probabilistic Aritificial Intelligence"* by Andreas Krause and Jonas Hübotter, which I'll refer to as PAI. It is [available on arxiv](https://arxiv.org/abs/2502.05244). I believe that there is also a [course website](https://las.inf.ethz.ch/teaching/pai-f24). 
+
+<!-- There seems to be [repo](https://github.com/angelognazzo/Probabilistic-Artificial-Intelligence) of previous semesters' homework of that course! -->
 
 There are many approaches to learn reinforcement learning, and I believe that the book is friendly to people with background in machine learning. It is also a good chance to brush up memories from books like PRML. 
 
@@ -25,6 +27,6 @@ Plan: We would skip Bayesian Neural Network for now and come back later, and at 
 - 02: [Active Learning]({{site.url}}{{site.baseurl}}/pai/active-learning-2); Chapter 8 of PAI
 - 03: [Bayesian Optimization(Bandits, etc.), Markov Decision Process(Policy Gradient, etc.)]({{site.url}}{{site.baseurl}}/pai/bayes-opt);Chapter 9, 10 of PAI
 - 04:  [Tabular RL]({{site.url}}{{site.baseurl}}/pai/tabular-rl);Chapter 11 of PAI
-- 06: []();Chapter 12 of PAI
-- 07: []();Chapter 13 of PAI
+- 05: [Model-free RL(large action space)]({{site.url}}{{site.baseurl}}/pai/model-free);Chapter 12 of PAI
+- 06: [Model-based RL(large action space)]({{site.url}}{{site.baseurl}}/pai/model-based);Chapter 13 of PAI
 - Extension: To Be Decided
