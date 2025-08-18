@@ -34,4 +34,6 @@ RaspberryPi位于和PC在同一局域网，并且也可以从笔记本通过tail
 
 考虑到未来通过GUI安装特定软件的需要，使用TightVNC或其他VNC类的软件进行串流。在tightvnc客户端上，使用device name加端口号即可（而非tailscale的ip地址），在这一步发现设置密码后在tight vnc客户端上会报错，所以设置为免密登录。
 
-如果要实现局域网内的远程游戏，可以使用sunshine/moonlight等支持更高帧率和分辨率的软件进行串流，但是内网穿透的环境下需要考虑到tailscale的带宽负担（请适度薅羊毛）。
+如果要实现局域网内的远程游戏，可以使用sunshine/moonlight等支持更高帧率和分辨率的软件进行串流。
+
+Tailscale的原理是两个终端通过中继服务器(DERP)来交换动态的公网地址实现打洞，后续使用UDP来进行点对点通讯。因此，Tailscale提供的服务器并不会中继网络流量，也没有带宽限制。

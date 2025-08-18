@@ -69,7 +69,7 @@ Essentially, sample a value from a $(0,1)$ uniform distribution. If the sampled 
 Obviously:
 
 - It's simple.
-- Longer into the game, you can tune $\epsilon$ to smaller values to encourage exploitation. (See remark 11.3 for the RM-conditions which the sequence should satisfy to converge to an optimal policy)
+- Longer into the game, you can tune $\epsilon$ to smaller values to encourage exploitation. (See remark 11.3 for the [RM-conditions](https://appliedprobability.blog/2019/01/26/robbins-munro-2/) which the sequence should satisfy to converge to an optimal policy)
 - We can utilize the inforation we have about the environment to decide what we are uncertain about and should explore(like we did in active learning), instead of randomly choosing an action to explore. 
 
 **Softmax Exploration/Blotzman Exploration**
@@ -149,7 +149,13 @@ This is the value update in TD-learning(*Algorithm 11.10*):
 
 $$V^\pi(x) \leftarrow (1-\alpha_t) V^\pi(x) + \alpha_t(r+\gamma V^{\pi} (x'))$$
 
-*Note: we are essentially taking EMA of the value function(if the learning rate is constant).*
+*Note: This is similiar to taking EMA of the value function.*
+
+You can rewrite this into the following form(the book did and so did [this huggingface post](https://huggingface.co/learn/deep-rl-course/unit2/mc-vs-td)): 
+
+$$V^\pi(x) \leftarrow  V^\pi(x) + \alpha_t(r+\gamma V^{\pi} (x') - V^\pi(x))$$
+
+*Note: You'll find that this form would stress that we are updating our estimate by error of the previous estimate. (Bootstrapping)*
 
 **SARSA(On-Policy Control)** (*11.4.2*)
 
