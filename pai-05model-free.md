@@ -5,7 +5,7 @@ permalink: /pai/model-free
 group: pai
 ---
 
-*Exciting stuffs in this chapter includes DQN, policy gradients/REINFORCE, TRPO/PPO, etc. Current(2023-2025) RLHF are mostly applications of model-free methods.*
+*Exciting stuffs in this chapter includes DQN, policy gradients/REINFORCE, TRPO/PPO, etc. Current RLHF are mostly applications of model-free methods. However, I'm slightly overwhelmed by this chapter and I'll leave question marks to places where I'm not sure.*
 
 First we must formulate the deep reinforcement learning problem. 
 
@@ -177,22 +177,144 @@ This gives us the policy update of the REINFORCE algorithm. (downstream return) 
 
 $$\phi \leftarrow \phi + \eta \gamma^t g_{t:T} \nabla_\phi \log \pi_\phi(a_t \vert x_t)$$
 
-See book for details on further reducing the variance. 
+See book for details on further reducing the variance: you can additionally subtract mean from each term of the downstream return sequence.  
 
 ## On-Policy Actor-Critic
 
-TRPO
+*Motivation*: Our previous alleviation of introducing a baseline reduce the magnitude of the variance, instead of reducing the uncertainty. The idea of actor-critic is to incorporate the techniques from value approximation so that it can guide the policy update, reducing the variance. (Reducing the uncertainty of full trajectory MC sampling)
 
-PPO
+<!-- and for some actor-critic models using advantage function, introduce state value as learnable baseline -->
 
-GRPO
+Also, introducing value approximation enables to method to update for each timestep without completing a rollout.(compare algorithm 12.8 with algorithm 12.11) Since the value approximation is updated for each time-step and the optimal policy is well-defined for value approximation. 
+
+Compared to pure value approximation method, by delegating the action selection to actor, the critic don't have to perform the intractable optimization over the infinite action space. 
+
+**Advantage Function**
+
+$$ a^\pi(x,a) = q^\pi(x,a) - v^\pi (x) = q^\pi(x,a) - E_{a' \sim \pi(x)}[q^\pi(x,a')] $$
+
+Optimizing advantage function is the same as optimizing q function. However, we have numerical advantage by optimizing on advantage function. 
+
+**Policy Gradient Theorem**
+
+We take the previously seen downstream return policy gradient and condition on $x^t$ and $a^t$ instead. We also use a different estimator to reduce variance. 
+
+$$\begin{aligned}
+& \nabla_\phi J(\phi) =  \Sigma^\infty_{t=0} E_{\tau \sim \Pi}  \gamma^t G_t \nabla _\phi \log \pi_\phi (a_t \vert x_t)\\
+& = \Sigma^\infty_{t=0} E_{\tau_{t:T} \sim \Pi}  \gamma^t G_t \nabla _\phi \log \pi_\phi (a_t \vert x_t) \\
+& = \Sigma^\infty_{t=0} E_{x_t, a_t}  \gamma^t E_{\pi_\phi} [G_t \vert x_t, a_t] \nabla _\phi \log \pi_\phi (a_t \vert x_t)\\
+& = \Sigma^\infty_{t=0} E_{x_t, a_t} \gamma^t \textcolor{red}{q^\pi_\phi(x_t, a_t)} \nabla _\phi \log \pi_\phi (a_t \vert x_t) \\
+\end{aligned}$$
+<!-- \gamma^t g_{t:T} \nabla_\phi \log \pi_\phi(a_t \vert x_t) -->
+
+This can be rephrased with introduction of **discounted state occupancy measure** $\rho^\infty_\phi$, measuring how often we visit a state given a policy: 
+
+$$\begin{aligned}
+& = \Sigma \int P_{X_t}(x) E_{a_t \sim \pi_\phi(. \vert x)} \gamma^t q^\pi_\phi(x_t, a_t) \nabla _\phi \log \pi_\phi (a_t \vert x_t) dx \\
+& = \frac{1}{1-\lambda} \int \rho^\infty_\phi (x) E_{a_t \sim \pi_\phi(. \vert x)} \gamma^t q^\pi_\phi(x_t, a_t) \nabla _\phi \log \pi_\phi (a_t \vert x_t) dx\\
+\\
+& \rho^\infty_\phi = (1-\lambda)\Sigma^\infty_{t-0} \gamma^t P_{X_t}(x)
+\end{aligned}$$
+
+<!-- increasing the probability of actions with a large value and decreasing the probability of actions with a small value, taking into account how often the resulting policy visits certain states-->
+
+**Actor-Critic**
+
+Both actor and critic should be parameterized by NN. 
+
+- *Actor* is parameterized policy. $pi_\phi$
+
+- *Critic* is a parameterized value function approximation. $q^{\pi_\phi}(x,a) \approx Q^{\pi_\phi}(x,a; \theta)$
+
+Recall the previous SARSA update from note 4(with some rewrite):
+
+$$Q^\pi(x,a)\leftarrow Q^\pi (x,a) + \alpha_t \textcolor{red}{(r+\gamma Q^\pi (x',a) - Q^\pi (x,a))}$$
+
+The red part is the Temporal Difference Error, $\delta$. If we use the same update here with chain rule, we can derive the update rule for the critic of the first actor-critic introduced by PAI: 
+
+$$\delta = r+\gamma Q^\pi (x',a; \theta) - Q^\pi (x,a; \theta)$$
+$$\theta \leftarrow \theta + \eta \delta \nabla_\theta Q(x,a;\theta)$$
+
+The update rule for actor simply substitute the downward discouted playoff with the critic's q-learning estimate: 
+
+$$\phi \leftarrow \phi + \eta \gamma^t Q(x,a;\theta) \nabla_\phi \log \pi_\phi(a\vert x)$$
+
+Consult *Algorithm 12.11* for full detail, note that the algorithm is on-policy and update is performed for each obtained transition. 
+
+*This is, however, problematic.*
+
+The Q-value estimate is not the discounted playoff we observed, rather it is biased. 
+
+Also, note that SARSA was on-policy(and the q-function it learns is dependent on policy) and the policy(actor) is updated for each iteration. This means the critic can never produce an accurate estimate. 
+
+There is, thus, no garuantee of improvement for the actor. 
+
+**Advantage Actor Critic**
+
+*Advantage Actor Critic(A2C)*: The critics estimates the advantage rather than the q-function. It is easier to model a relative value than an absolute value. Since you only need to get the sign right, and a positive advantage will induce a positive gradient to encourage the policy, vice versa. 
+
+$$\phi \leftarrow \phi + \eta \gamma^t A(x,a;\theta) \nabla_\phi \log \pi_\phi(a\vert x)$$
+
+<!-- $$A(x,a;\theta) = Q(x,a\vert \theta) - V(x;\theta) = E[r+\lambda V(s')] - V(s)$$ (?)
+
+For the actor update, you can verify that the TD-error is slightly different: 
+
+$$\delta = r+ \lambda V(x') - V(x)$$
+
+If we use a one sample estimate for advantage, the two term is actually the same.  -->
+
+*Generalized Advantage Estimation(GAE)*: The motivation of GAE is to perform variance-bias tradeoff between value approximation(low variance, biased) and policy approximation(high variance, unbiased). GAE adopts stochastic policy and $\epsilon$-greedy to encourage exploration. But this doesn't solve the sample inefficiency of the on-policy setting. 
+
+
+*There are different ways to approximate/model the advantage function(1 step TD and GAE) and PAI doesn't seems to discuss much about that.* (?)
+
+**Trusted-Region Policy Optimization(TRPO)**: TRPO aims to improve sample efficiency by allowing some reuse of past data via performing stable and larger policy updates. ("kinda" analogous to DQN)
+
+TRPO constraint the update for each iteration (k) using KL-divergence between stochastic policies, so that the policy update lands in a "trusted region".  
+
+$$\phi_{k+1}\leftarrow \argmax_\phi J(\phi); E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)] < \delta$$
+
+$$ J(\phi) = E_{x \sim \rho^\infty_{\phi_k}; a \sim \pi_{\phi_k}} [w_k(\phi; x,a) A^{\pi_{\phi_k}}(x,a)]$$
+
+$$w_k(\phi;x,a) = \frac{\pi_{\phi}(a\vert x)}{\pi_{\phi_k}(a\vert x)}$$
+
+The expectation is a rephrased policy objective maximizing the weighted advantage taking into account of how often the states are visited(discounted state occupancy measure). 
+
+The weight(importance sampling) is applied so that the policy evaluation focus on actions that was more chosen in new policy than previous policy. 
+
+The KL divergence constrain the new policy so that the new policy behaves roughly similiar to the previous policy on frequently visited states. By taking small steps, we allow the critics to learn and stay effective. (Increasing sample efficiency) Also, with this constraint, the importance weight won't be too large(say, infinity) or small. 
+
+*PPO* replace the constraint optimization with unconstraint optimization with regularization. This introduces a trade-off in place of a hard clipping constraint. 
+
+$$\phi_{k+1}\leftarrow \argmax_\phi J(\phi) - \lambda E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)]$$
+
+*Remark 12.12* shows that the KL divergence can be estimated by Monte Carlo, adding a baseline: (?) 
+
+$$KL = E_{a\sim \pi_{\phi_k}} [w_k(\phi; x,a) - 1 - \log w_k(\phi; x,a)]$$
+
+*GRPO* uses Monte Carlo estimate of the advantage function instead of the critic estimates. GRPO is more computationally efficient than PPO, retaining the sample efficiency. *GRPO embraces the high variance of rollout. However, it applies the group-wise normalization with mean and standard deviation.*
+
+$$\begin{aligned}
+& \hat J(\phi) = E_{[\tau^{(i)}]^m_i \sim \Pi_{\phi_k}} [\frac{1}{m} \Sigma^m_i \Sigma_t w_k(\phi;x,a) \hat{A}^{\pi_{\phi_k}}_{t,i}]\\
+& \hat{A}^{\pi_{\phi_k}}_{t,i} = \frac{g^{(i)}_{t:T} - mean(\{\tau^i\}) }{std(\{\tau^i\})}\\
+\end{aligned}$$
+
+*You can even see GRPO as a variant of the vanilla REINFORCE!*
+
+*It sort of make sense for GRPO to be proposed in an Generative LM paper, since if you see every word/token as an action, there is no immediate reward for every action, but a preference score(from human?) for the entire sequence.* (?)
+
+*It is not explicitly shown here and on the book. But GRPO still adopt the idea of restraint upgrade despite the absence of a learned critic from PPO. On second thought this actually might make sense because the regularization can reduce the instability of the policy parameter caused by high variance.(?) Note that GRPO uses reverse KL and PPO uses forward KL. (Why?)*
 
 ## Off-Policy Actor-Critic
+
+*With previously introduces mitigations, on-policy actor-critic still can suffer from sample efficiency. Off-policy Actor-critic is another family of methods. Naturally, off-policy implies reusing past data.*
 
 Randomized Policies
 
 Reparameterization Trick
 
-## Maximum Entropy RL(MERL)
+## Maximum Entropy RL(MERL)/Entropy Regularization
+
+*Motivation*: Randomized Stochastic policy can collapse to deterministic. MaxEnt regularize the policy(by maximizing entropy, increasing uncertainty, as the name suggest) and prevents that. 
 
 *I would delay the RLHF part(12.7) of this chapter to "extension".*
