@@ -103,7 +103,7 @@ Additionally, PAI provides another on-policy interpretation/implementation of th
 
 **The Optimization Goal**
 
-$$\phi = \argmax J(\pi_\phi); J(\pi) = E_\pi [G_0]=E_\pi [\Sigma \gamma^t R_t] \approx E_\pi[G_{0:T}]$$
+$$\phi = argmax J(\pi_\phi); J(\pi) = E_\pi [G_0]=E_\pi [\Sigma \gamma^t R_t] \approx E_\pi[G_{0:T}]$$
 
 Calculating the exact expectation is a bit tricky(and costly): the policy $\pi$ can be stochastic, the unmodeled transition and reward is definitely stochastic. However, we can use MCMC (basically play the game multiple time with the policy, producing multiple episodes) to approximate it:
 
@@ -272,7 +272,7 @@ If we use a one sample estimate for advantage, the two term is actually the same
 
 TRPO constraint the update for each iteration (k) using KL-divergence between stochastic policies, so that the policy update lands in a "trusted region".  
 
-$$\phi_{k+1}\leftarrow \argmax_\phi J(\phi); E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)] < \delta$$
+$$\phi_{k+1}\leftarrow argmax_\phi J(\phi); E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)] < \delta$$
 
 $$ J(\phi) = E_{x \sim \rho^\infty_{\phi_k}; a \sim \pi_{\phi_k}} [w_k(\phi; x,a) A^{\pi_{\phi_k}}(x,a)]$$
 
@@ -286,7 +286,7 @@ The KL divergence constrain the new policy so that the new policy behaves roughl
 
 *PPO* replace the constraint optimization with unconstraint optimization with regularization. This introduces a trade-off in place of a hard clipping constraint. 
 
-$$\phi_{k+1}\leftarrow \argmax_\phi J(\phi) - \lambda E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)]$$
+$$\phi_{k+1}\leftarrow argmax_\phi J(\phi) - \lambda E_{x \sim \rho^\infty_{\phi_k}}KL[\pi_{\phi_k}(.\vert x)\vert \vert \pi_{\phi_{k+1}}(.\vert x)]$$
 
 *Remark 12.12* shows that the KL divergence can be estimated by Monte Carlo, adding a baseline: (?) 
 
