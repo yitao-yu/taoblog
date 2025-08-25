@@ -309,12 +309,87 @@ $$\begin{aligned}
 
 *With previously introduces mitigations, on-policy actor-critic still can suffer from sample efficiency. Off-policy Actor-critic is another family of methods. Naturally, off-policy implies reusing past data.*
 
-Randomized Policies
+So we naturally want to decouple the actor and critic training. The actor will be used to generate "playing" data to be stored in the replay buffer, and the critic will be trained by sampling experience from the replay buffer, like we did in DQN. The actor will be trained to maximize the estimated Q-value for any states(instead of updated by policy gradient from a single transition). 
 
-Reparameterization Trick
+Recall that we could not evaluate the DQN loss with large action space because of the max operator. Similarily, the actor network lift the need of this. 
+
+As usual, the regression target for the critic is a bootstrapped estimate. 
+
+*Exploration Distribution*: $\mu(x) > 0$ is the exploration distribution. It denotes the sampling process from the replay buffer. Transitions of all possible states are uniformly sampled(full support). This ensures no states are missed and thus unbiased gradient estimate.
+
+$$\begin{aligned}
+& \hat J_\mu (\phi; \theta) = E_{x\sim \mu} [Q^*(x, \pi_\phi(x); \theta)]\\ \\
+& \nabla_\phi \hat J_\mu (\phi; \theta) = E_{x\sim \mu} [\nabla_\phi Q^*(x, \pi_\phi(x); \theta)]\\
+& =  E_{x\sim \mu} [\textbf{J}_\phi \pi_\phi(x) \nabla_a Q^*(x, a; \theta)\vert _{a=\pi_\phi(x)}]
+\end{aligned}$$
+
+$\textbf{J}_\phi \pi_\phi(x)$ is Jacobian matrix, and $\nabla_a Q^*(x, a; \theta)\vert _{a=\pi_\phi(x)}$ is a gradient vector same length as the action vector. Applying the matrix multiplication will acquire the sum "blame" on each parameter over each action dimension (chain rule).
+
+For the same reason, DDPG only iterates between playing/collecting data and updating both actor and critic from replay buffer.
+
+**Deep Deterministic Policy Gradient(DDPG), Twin Delayed DDPG(TD3)**
+
+PAI first introduce us to the setting where policy is deterministic. 
+
+The old parameter is saved and updated with EMA to support bootstrapping. 
+
+In this setting, noise is added to action chosen by actor to encourage exploration. Also, note that the actor is updated in every inner loop with its own chosen action. (*Algorithm 12.13*)
+
+*Regression target of a transition for Critic*
+$$y = r+\gamma Q^*(x',\pi(x';\phi^{old});\theta^{old})$$
+
+*Critic Update*
+$$\theta \leftarrow \theta - \eta \nabla_\theta \frac{1}{B} \Sigma_{(x,a,r,x',y)\in B} (y-Q^*(x,a;\theta))^2$$
+$$\theta_{old} = (1-\rho)\theta_{old} + \rho \theta$$
+
+*Actor Update*
+$$\phi \leftarrow \phi + \eta \nabla_\phi \frac{1}{B} \Sigma_{(x,a,r,x',y)\in B} Q^*(x,a;\theta)$$
+$$\phi_{old} = (1-\rho)\phi_{old} + \rho \phi$$
+
+*Similarily to DDQN, TD3 improves DDPG by introducing an old critic network and delaying actor updates.*
+
+**Stochastic Policies and Reparameterization Trick**
+
+*Critic*
+
+The critic gradient involves expectation over stochastic policy and, because the action space is intractable, probably sampling. 
+
+$$\nabla_\theta E_{a'\sim \pi(x',\phi)} [\frac{1}{2}(r+\gamma Q^*(x',\pi(x';\phi^{old});\theta^{old}) -Q^*(x,a;\theta))^2 ]$$
+
+*Actor*
+
+Actor gradient is slightly more tricky since we cannot move the gradient operator inside the expectation(again). 
+
+$$\nabla_\phi \hat J(\phi; \theta) = E_{x\sim \mu} \nabla_\phi E_{a\sim \pi(x;\phi)}[Q^*(x,a;\theta)]$$
+
+This time, we use reparameterization trick. 
+
+(Suppose $\pi$ is a Gaussian distribution thus reparameterizable)
+
+$$\begin{aligned}
+& \nabla_\phi E_{a\sim \pi(x;\phi)}[Q^*(x,a;\theta)] \\
+& = E_{\epsilon \sim Z} [ \nabla_\phi Q^*(x, a_\epsilon;\theta)] ; \\
+& a_\epsilon = \mu(x;\phi)+\Sigma(x;\phi)^{\frac{1}{2}}\epsilon, \epsilon \sim Z.
+\end{aligned}$$
+
+Consult book for more general notation since Gaussian is not the only reparameterizable distribution. 
 
 ## Maximum Entropy RL(MERL)/Entropy Regularization
 
 *Motivation*: Randomized Stochastic policy can collapse to deterministic. MaxEnt regularize the policy(by maximizing entropy, increasing uncertainty, as the name suggest) and prevents that. 
+
+
+$$\begin{aligned}
+& J_{\lambda}(\phi) = J(\phi) + \lambda H[\Pi_{\phi}]\\
+& = \Sigma_t E_{(x_t,a_t)\sim \Pi_\phi} [r(x_t,a_t) + \lambda H[\pi_\phi(.\vert x_t)]]
+\end{aligned}$$
+
+Entropy for some given distributions(if continuous action space) can be write in closed form. For [univariate gaussian](https://gregorygundersen.com/blog/2020/09/01/gaussian-entropy/):
+
+$$H = \frac{1}{2} \log(2\pi \sigma^2) + \frac{1}{2} = \frac{1}{2} \log(2\pi e \sigma^2)$$
+
+**Control as Inference/Soft Actor Critic(SAC)** (*12.6.1*)
+
+*More here*
 
 *I would delay the RLHF part(12.7) of this chapter to "extension".*

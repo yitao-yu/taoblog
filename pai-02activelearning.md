@@ -22,7 +22,7 @@ Why this mapping? *Practically*, computers are better at adding very large numbe
 
 - more surprise means less occuring events(means "more surprise"): $u<v \to S[u] > S[v]; $
 
-- Continuous and defined on $(0, \infty)$; ()
+- Continuous and defined on $(0, \infty)$; 
 
 - $S[uv] = S[u] +S[v]$
 
