@@ -17,7 +17,7 @@ group: pai
 
 **Online(Sequential) Learning/Multi-Armed Bandits/Bayesian Optimization**
 
-We have $k$ actions(arms) at each time step, and wish to maximize a reward functiona at Horizon $T$. The reward function is $\Sigma_t f^*(x_t)$. $f^*$ is unknown. 
+We have $k$ actions(arms) at each time step, and wish to maximize a reward functiona at Horizon $T$. The reward function is $\Sigma_t f^\ast(x_t)$. $f^\ast$ is unknown. 
 
 Since we do not know the reward distribution(and this a one-time game), we face the exploration-exploitation dilemma at each action. 
 
@@ -87,7 +87,7 @@ The bound is derived from the tail probability of $N(0,1)$:
 
 $$Pr(r>c) = \frac{1}{2\pi}\int^\infty_c e^{-\frac{u^2}{2}}du$$
 
-Note $r = \frac{f^*(x)-\mu_{t-1}(x)}{\sigma_{t-1}}>c$ is an event about $f^*$ interval's *upper bound* and thus $c > 0$(positive z-score for upper bound of GP). We define $z = u - c \to u = z+c$ to map the integral range to $(0, \infty)$. 
+Note $r = \frac{f^\ast(x)-\mu_{t-1}(x)}{\sigma_{t-1}}>c$ is an event about $f^\ast$ interval's *upper bound* and thus c > 0 (positive z-score for upper bound of GP). We define $z = u - c \to u = z+c$ to map the integral range to $(0, \infty)$. 
 
 $$\begin{aligned}
 & Pr(r>c) = \frac{1}{2\pi}\int^\infty_0 e^{-\frac{(z+c)^2}{2}} dz\\
@@ -116,7 +116,7 @@ The bound is not $\Pi_t (1-\frac{\delta}{\pi_t})$ because we *do not* assume ind
 
 *This would, with further proofs, give us sublinear regret in theorem 9.3.*
 
-**Freqeuntist Setting** means that we assume no prior about $f^*$. Rahter, we assume $f^* \in H_k(X) \leftrightarrow \vert \vert f^*\vert \vert_k < \infty$, recall the RKHS and function's norm in RKHS. (This can be shown to be contradictory to the bayesian assumption, according to the book. )
+**Freqeuntist Setting** means that we assume no prior about $f^\ast$. Rahter, we assume $f^\ast \in H_k(X) \leftrightarrow \vert \vert f^\ast \vert \vert_k < \infty$, recall the RKHS and function's norm in RKHS. (This can be shown to be contradictory to the bayesian assumption, according to the book. )
 
 *I would not pursue proofs for the frequentist setting unless I have more time, but a rough skim through Chowdhury and Gopalan 2017 shows that the norm of the error sequence $\epsilon_{1:t}$ is bounded.*
 
@@ -254,7 +254,7 @@ A game theory view is interested in finding the mixed-startegy equilibrium and a
 A MDP agent playing the offender would know the strategy of the officer(say 10% chance of patroling) and calculate rewards, determining that "breaking the rule" would be a fixed optimal policy.
 ```
 
-$E r_b = -100*0.1+0.9*10=-1 > E r_f = -5$
+$$E r_b = -100 \times 0.1+0.9 \times 10=-1 > E r_f = -5$$
 
 A fixed policy implies that the process can be described by a Markov chain(no tree-like structure). 
 
@@ -266,7 +266,7 @@ $$G_t = \Sigma^{\infty}_{m=0} \gamma^m R_{t+m} ;  0 \leq \gamma < 1$$
 
 $$q^\pi_t(x,a) = E_\pi [G_t\vert x, a] = r(x,a) + \gamma \Sigma_{x'} p(x' \vert x, a) v^{\pi}_{t+1}(x')$$
 
-$v^{\pi}_t(x) = E_{\pi} [G_t \vert x]$ is **State Value Function**. Under our current assumption(stationary dynamics, rewards and policy), both are independent from $t$. 
+where {::nomarkdown}$v^{\pi}_{t}(x) = E_{\pi} [G_{t} \vert x]$ {:/nomarkdown} is **State Value Function**. Under our current assumption(stationary dynamics, rewards and policy), both are independent from $t$. 
 
 ## Bellman Expectation Equation
 
@@ -363,11 +363,11 @@ We should be reminded that q and v functions are dependent on a specific policy.
 
 It is intuitive that this optimization problem is an iterative process(fixed point iteration). There are two view of this optimization problem: 
 
-- Policy Iteration: $\pi^*$ is the fixed point of the dependency between the greedy policy and the value function. This stress that: *The optimal policy is the one which maximize itself's q and v function(and thus $q^*$ abd $v^*$)*.
+- Policy Iteration: $\pi^\ast$ is the fixed point of the dependency between the greedy policy and the value function. This stress that: *The optimal policy is the one which maximize itself's q and v function(and thus $q^\ast$ abd $v^\ast$)*.
 
-$$\pi^*(x) = argmax_a q^*(x,a)$$
+$$\pi^\ast(x) = argmax_a q^*(x,a)$$
 
-- Value Iteration: $v^*$ is the fixed point of *Bellman Update* This stress that: *The value of the state under an optimal policy must be the expected return of the best action*.
+- Value Iteration: $v^\ast$ is the fixed point of *Bellman Update* This stress that: *The value of the state under an optimal policy must be the expected return of the best action*.
 
 $$v^*(x) = \max_a q^*(x,a) = \max_a r(x,a) + \gamma E_{x'\vert x,a}[v^*(x)]$$
 

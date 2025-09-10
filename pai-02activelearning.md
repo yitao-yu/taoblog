@@ -258,7 +258,7 @@ The last step assumes iid between all data points.
 
 ## Tranductive Active Learning
 
-If we wish to optimize for the best performance of f(x^*) at a specific location $x^*$: 
+If we wish to optimize for the best performance of f(x^\ast) at a specific location $x^*$: 
 
 **Inductive Learning**: select a diverse set of example, allowing the model to compress most general information. 
 

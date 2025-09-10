@@ -323,7 +323,7 @@ $$\begin{aligned}
 & =  E_{x\sim \mu} [\textbf{J}_\phi \pi_\phi(x) \nabla_a Q^*(x, a; \theta)\vert _{a=\pi_\phi(x)}]
 \end{aligned}$$
 
-$\textbf{J}_\phi \pi_\phi(x)$ is Jacobian matrix, and $\nabla_a Q^*(x, a; \theta)\vert _{a=\pi_\phi(x)}$ is a gradient vector same length as the action vector. Applying the matrix multiplication will acquire the sum "blame" on each parameter over each action dimension (chain rule).
+{::nomarkdown}$\textbf{J}_\phi \pi_\phi(x)$ is a Jacobian matrix, and $\nabla_a Q^\ast(x, a; \theta)\vert _{a=\pi_\phi(x)}$ is a gradient vector same length as the action vector. Applying the matrix multiplication will acquire the sum "blame" on each parameter over each action dimension (chain rule).{:/nomarkdown}
 
 For the same reason, DDPG only iterates between playing/collecting data and updating both actor and critic from replay buffer.
 

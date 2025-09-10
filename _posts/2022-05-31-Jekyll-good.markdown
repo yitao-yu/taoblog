@@ -45,6 +45,25 @@ $$\begin{aligned}
 \end{aligned}$$
 ```
 
+Using stars directly in latex notations can cause trouble when parsing for this set-up. Use: 
+
+```
+$y^\ast$
+$y^\star$
+```
+
+Some times underscore would cause the same problem. There is no easy work-arounds so you have to break out of the markdown for the statement or the paragraph. 
+
+```
+{::nomarkdown}
+{:/nomarkdown}
+```
+
+```
+where {::nomarkdown}$v^{\pi}_{t}(x) = E_{\pi} [G_{t} \vert x]$ {:/nomarkdown} is **State Value Function**. Under our current assumption(stationary dynamics, rewards and policy), both are independent from $t$. 
+
+{::nomarkdown}$\textbf{J}_\phi \pi_\phi(x)$ is a Jacobian matrix, and $\nabla_a Q^\ast(x, a; \theta)\vert _{a=\pi_\phi(x)}$ is a gradient vector same length as the action vector. Applying the matrix multiplication will acquire the sum "blame" on each parameter over each action dimension (chain rule).{:/nomarkdown}
+```
 
 [wordpress.com]: https://wordpress.com/
 [winhtttrack]: https://www.httrack.com/

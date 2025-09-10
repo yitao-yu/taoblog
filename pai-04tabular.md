@@ -208,7 +208,7 @@ The initialization is(repeated multiplication to inflate the value for it to not
 $$Q^*(x,a) \leftarrow V_{\max} \Pi^{T_{init}}_{t=1}(1-\alpha_t)^{-1}$$
 $$V_{\max} =\frac{R_{\max}}{1-\gamma} \geq \max q^*(x,a)$$
 
-The book proves that for initialization steps(of each state-action pair), $Q_t\geq V_{\max} \geq q^*(x,a)$. (*Lemma 11.15*)
+The book proves that for initialization steps(of each state-action pair), $Q_t\geq V_{\max} \geq q^\ast(x,a)$. (*Lemma 11.15*)
 
 *Note*
 

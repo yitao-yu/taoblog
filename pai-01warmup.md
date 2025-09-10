@@ -139,7 +139,7 @@ The book has also mentioned that instead of using a point estimate of the weight
 $$f^* \vert  x^*, x_{1:n}, y_{1:n} \sim N(\mu^T x^*, x^{*T} \Sigma x^*) \\
 y^*\vert  x^*, x_{1:n}, y_{1:n} \sim  N(\mu^T x^*, x^{*T} \Sigma x^*+\sigma_n^2)$$
 
-$f^*$ is the **actual distribution or BLR prediction**, however, $y^*$ is the **predicted label**, taking account of the the data generation noise(gaussian noise). I want to help with this distinction:
+$f^\ast$ is the **actual distribution or BLR prediction**, however, $y^\ast$ is the **predicted label**, taking account of the the data generation noise(gaussian noise). I want to help with this distinction:
 
 $$
 p(f^*\vert x^*,x_{1:n},y_{1:n}) = \int p(f^*\vert w,x^*) p(w\vert x_{1:n},y_{1:n}) dw\\
@@ -147,7 +147,13 @@ p(f^*\vert x^*,x_{1:n},y_{1:n}) = \int p(f^*\vert w,x^*) p(w\vert x_{1:n},y_{1:n
 p(y^*\vert x^*,x_{1:n},y_{1:n}) = \int p(y^*\vert f*) p(f^*\vert x^*,x_{1:n},y_{1:n}) dw
 $$
 
-where $p(y^*\vert f*)$ is the data generation process(normal distribution). In other word, $f^*$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^*$(BLR prediction) is the prior for $y^*$(the actual prediction) and the data generation distribution is the likelihood. 
+where $p(y^\ast \vert f^\ast)$ is the data generation process(normal distribution). In other word, $f^\ast$ is the theoretical distribution of the target value. However, this is made more uncertain by the data generation noise. $f^\ast$ (BLR prediction) is the prior for $y^\ast$ (the actual prediction) and the data generation distribution is the likelihood. 
+
+<!-- Here the mathjax is bit naughty, so this is needed -->
+
+<!-- where \\(p(y^* \vert f*) \\) is the data generation process(normal distribution). In other word, \\(f^*\\) is the theoretical distribution of the target value.  
+
+However, this is made more uncertain by the data generation noise. $f^* $ (BLR prediction) is the prior for the actual prediction ($y^* $) and the data generation distribution is the likelihood.  -->
 
 This would allow us to have a **varying distribution over the feature space**: more certain when there are more observed data around the test point, less certain when there are less. The book didn't go into a lot of detail and I wish to show this feature. 
 
@@ -239,7 +245,7 @@ $n\times e$ design matrix/training dataset, and the vecotr for unobserved data p
 
 >**target groundtruth:** $\hat{y} = \begin{bmatrix} y \\ y^* \end{bmatrix}$
 
-*$y^*$ is not observable, unless in evaluation/testing.*
+*$y^\star$ is not observable, unless in evaluation/testing.*
 
 >**noise-free prediction:** $\hat{f} = \begin{bmatrix}f \\ f^* \end{bmatrix}$
 
@@ -350,7 +356,7 @@ $$\begin{aligned}
 & \hat K = \begin{bmatrix} K_AA & k_{x^*, A}\\k^T_{x^*, A} & k(x^*,x^*)\end{bmatrix}; k(x,A) = \begin{bmatrix} k(x,x_1)\\... \end{bmatrix}
 \end{aligned}$$
 
-As you may recall from kernelized BLR, we just need to calculate $k(x^*, A)$ (the kernel function for new data point and our observations) and $k(x^*, x^*)$. 
+As you may recall from kernelized BLR, we just need to calculate $k(x^\ast, A)$ (the kernel function for new data point and our observations) and $k(x^\ast, x^\ast)$. 
 
 From the joint distribution, we can derive the predictive posterior(the conditional distribution), which is also the predictive posterior of kernelized BLR:
 
